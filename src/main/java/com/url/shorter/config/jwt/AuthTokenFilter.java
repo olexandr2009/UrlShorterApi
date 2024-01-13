@@ -1,6 +1,5 @@
 package com.url.shorter.config.jwt;
 
-import com.url.shorter.features.user.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

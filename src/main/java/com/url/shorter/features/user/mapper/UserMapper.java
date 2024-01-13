@@ -1,9 +1,9 @@
 package com.url.shorter.features.user.mapper;
 
 import com.url.shorter.features.user.dtos.UserDto;
+import com.url.shorter.features.user.entities.RoleEntity;
 import com.url.shorter.features.user.entities.UserEntity;
 import org.springframework.stereotype.Service;
-import com.url.shorter.features.user.entities.RoleEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;
