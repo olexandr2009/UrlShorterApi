@@ -1,0 +1,10 @@
+CREATE TABLE links(
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    short_url VARCHAR(25) NOT NULL,
+    origin_url VARCHAR(250) NOT NULL,
+    created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    open_count INT DEFAULT 0,
+    expiration_date TIMESTAMP NOT NULL,
+    user_id INT NOT NULL,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id)
+);
