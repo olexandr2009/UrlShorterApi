@@ -1,4 +1,11 @@
 package com.url.shorter.link.data;
 
-public interface LinkRopository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Spring repository for link
+ */
+@Repository
+public interface LinkRepository extends JpaRepository<LinkEntity, String> {
 }
