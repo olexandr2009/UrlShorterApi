@@ -55,9 +55,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userRepository.existsByUsername(username)) {
             throw new UserAlreadyExistException(username);
         }
-        if (userRepository.existsByUsername(username)) {
-            throw new UserAlreadyExistException(username);
-        }
 
         UserEntity user = new UserEntity(username, encoder.encode(password));
         Set<RoleEntity> roleEntities = roleRepository.findByNames(Collections.singleton(RoleEntity.UserRole.ROLE_USER));

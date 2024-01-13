@@ -19,4 +19,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     @Query("FROM UserEntity ue WHERE ue.username IN :names")
     List<UserEntity> findByUsernames(@Param("names") Collection<String> names);
+
 }
