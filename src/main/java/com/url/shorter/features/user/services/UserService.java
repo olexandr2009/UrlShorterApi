@@ -9,6 +9,7 @@ import com.url.shorter.features.user.exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public interface UserService {
     @Transactional
@@ -16,11 +17,11 @@ public interface UserService {
             throws UserAlreadyExistException;
 
     @Transactional
-    UserDto updateUser(Integer userId, UpdateUserDto updateUserDto)
+    UserDto updateUser(UUID userId, UpdateUserDto updateUserDto)
             throws UserNotFoundException, UserIncorrectPasswordException, UserAlreadyExistException;
 
     @Transactional
-    UserDto updateUserRoles(Integer userId, Collection<RoleEntity.UserRole> roles)
+    UserDto updateUserRoles(UUID userId, Collection<RoleEntity.UserRole> roles)
             throws UserNotFoundException;
 
 }

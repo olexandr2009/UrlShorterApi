@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,7 +46,7 @@ public class AuthControllerUnitTest {
     void testAuthenticateUser() {
         String testToken = "JSDGGHFVHFJHSFTYHJDJG24VGHV";
         when(authenticationManager.authenticate(any()))
-                .thenReturn(new UsernamePasswordAuthenticationToken(new UserDetailsImpl(0, "", List.of()), ""));
+                .thenReturn(new UsernamePasswordAuthenticationToken(new UserDetailsImpl(UUID.randomUUID(), "", List.of()), ""));
         when(jwtUtils.generateJwtToken(any()))
                 .thenReturn(testToken);
 
