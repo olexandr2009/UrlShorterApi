@@ -1,9 +1,12 @@
+version: "3.8"
+
 services:
   postgres:
-    image: 'postgres:latest'
+    image: postgres
+    restart: always
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - POSTGRES_USERNAME= postgres
+      - POSTGRES_PASSWORD= pass
+      - POSTGRES_DB= urlShorterDb
     ports:
-      - '5432'
+      - "5432:5432"
