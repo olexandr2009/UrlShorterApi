@@ -1,4 +1,12 @@
 package com.url.shorter.features.link.entities;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 
 import com.url.shorter.features.user.entities.UserEntity;
 import jakarta.persistence.*;
