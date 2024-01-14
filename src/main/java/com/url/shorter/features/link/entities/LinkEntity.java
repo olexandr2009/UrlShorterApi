@@ -7,47 +7,52 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
+import com.url.shorter.features.user.entities.UserEntity;
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.security.Timestamp;
 import java.util.UUID;
 
-/**
- * Link entity
- */
-@Entity
-@Table(name = "links")
-
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "l_link_s_link")
 public class LinkEntity {
-    @Id
-    @Column(name = "id")
-    UUID id;
 
-    @Column(name = "short_url", length = 25)
-    @NotNull
-    String shortUrl;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private String id = UUID.randomUUID().toString();
 
-    @Column(name = "origin_url", length = 250)
-    @NotNull
-    String originUrl;
+        @Column(name = "long_link", nullable = false)
+        private String longLink;
 
-    @Column(name = "created_date")
-    @NotNull
-    LocalDateTime createdDate;
+        @Column(name = "short_link", nullable = false)
+        private String shortLink;
 
-    @Column(name = "open_count")
-    @NotNull
-    Integer openCount;
+        @Column(name = "id_user", nullable = false)
+        private int userId;
 
-    @Column(name = "expiration_date")
-    @NotNull
-    LocalDateTime expirationDate;
+        @Column(name = "creation_date", nullable = false)
+        private Timestamp creationDate;
 
-    @Column(name = "user_id")
-    @NotNull
-    UUID userId;
+        @Column(name = "expiration_date", nullable = false)
+        private Timestamp expirationDate;
 
+        @Column(name = "clicks", nullable = false)
+        private int clicks;
+
+        @ManyToOne
+        @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
+        private UserEntity user;
+
+        public LinkEntity(String longLink, String shortLink, int userId, Timestamp creationDate, Timestamp expirationDate, int clicks, UserEntity user) {
+                this.longLink = longLink;
+                this.shortLink = shortLink;
+                this.userId = userId;
+                this.creationDate = creationDate;
+                this.expirationDate = expirationDate;
+                this.clicks = clicks;
+                this.user = user;
+        }
 }
