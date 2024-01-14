@@ -16,11 +16,11 @@ public interface UserService {
             throws UserAlreadyExistException;
 
     @Transactional
-    UserDto updateUser(Integer userId, UpdateUserDto updateUserDto)
+    UserDto updateUser(UpdateUserDto updateUserDto)
             throws UserNotFoundException, UserIncorrectPasswordException, UserAlreadyExistException;
 
     @Transactional
-    UserDto updateUserRoles(Integer userId, Collection<RoleEntity.UserRole> roles)
+    UserDto updateUserRoles(String username, Collection<RoleEntity.UserRole> roles)
             throws UserNotFoundException;
 
 }

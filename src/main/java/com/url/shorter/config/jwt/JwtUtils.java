@@ -23,6 +23,9 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
+        if (authentication == null){
+            throw new NullPointerException("authentication cannot be null");
+        }
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
