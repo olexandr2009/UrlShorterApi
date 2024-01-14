@@ -20,10 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Primary
 @Service
@@ -64,7 +61,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional
-    public UserDto updateUser(Integer userId, UpdateUserDto updateUserDto)
+    public UserDto updateUser(UUID userId, UpdateUserDto updateUserDto)
             throws UserNotFoundException, UserIncorrectPasswordException, UserAlreadyExistException {
         UserEntity user = userRepository.findByUsername(updateUserDto.getOldUsername())
                 .orElseThrow(() -> new UserNotFoundException(updateUserDto.getOldUsername()));
@@ -83,7 +80,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional
-    public UserDto updateUserRoles(Integer userId, Collection<RoleEntity.UserRole> roles) throws UserNotFoundException {
+    public UserDto updateUserRoles(UUID userId, Collection<RoleEntity.UserRole> roles) throws UserNotFoundException {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         Set<RoleEntity> roleEntities = roleRepository.findByNames(roles);

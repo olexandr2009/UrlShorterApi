@@ -11,6 +11,7 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
@@ -19,7 +20,7 @@ public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Getter
-    private final Integer id;
+    private final UUID uuid;
 
     private final String username;
 
@@ -28,16 +29,16 @@ public class UserDetailsImpl implements UserDetails {
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Integer id, String username,
+    public UserDetailsImpl(UUID id, String username,
                            Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
+        this.uuid = id;
         this.username = username;
         this.authorities = authorities;
     }
 
-    public UserDetailsImpl(Integer id, String username, String password,
+    public UserDetailsImpl(UUID uuid, String username, String password,
                            Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
+        this.uuid = uuid;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -97,7 +98,7 @@ public class UserDetailsImpl implements UserDetails {
         if (o == null || getClass() != o.getClass())
             return false;
         UserDetailsImpl user = (UserDetailsImpl) o;
-        return Objects.equals(id, user.id);
+        return Objects.equals(uuid, user.uuid);
     }
 }
 

@@ -40,7 +40,7 @@ public class UserController {
             throws UserNotFoundException, UserAlreadyExistException, UserIncorrectPasswordException {
         SecurityContext context = SecurityContextHolder.getContext();
         UserDetailsImpl authentication = (UserDetailsImpl) context.getAuthentication().getPrincipal();
-        return ResponseEntity.ok(userService.updateUser(authentication.getId(), updateUserDto));
+        return ResponseEntity.ok(userService.updateUser(authentication.getUuid(), updateUserDto));
     }
 
     @PutMapping("/update/roles")
@@ -48,6 +48,6 @@ public class UserController {
             throws UserNotFoundException {
         SecurityContext context = SecurityContextHolder.getContext();
         UserDetailsImpl authentication = (UserDetailsImpl) context.getAuthentication().getPrincipal();
-        return ResponseEntity.ok(userService.updateUserRoles(authentication.getId(), updateUserRoleDto.getRoles()));
+        return ResponseEntity.ok(userService.updateUserRoles(authentication.getUuid(), updateUserRoleDto.getRoles()));
     }
 }
