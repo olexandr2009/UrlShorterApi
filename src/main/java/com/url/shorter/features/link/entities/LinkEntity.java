@@ -3,26 +3,26 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 
 import com.url.shorter.features.user.entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "l_link_s_link")
 public class LinkEntity {
 
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private String id = UUID.randomUUID().toString();
+        @GeneratedValue(strategy = GenerationType.UUID)
+        private UUID id;
 
         @Column(name = "long_link", nullable = false)
         private String longLink;
@@ -30,14 +30,11 @@ public class LinkEntity {
         @Column(name = "short_link", nullable = false)
         private String shortLink;
 
-        @Column(name = "id_user", nullable = false)
-        private int userId;
-
         @Column(name = "creation_date", nullable = false)
-        private Timestamp creationDate;
+        private LocalDateTime creationDate;
 
         @Column(name = "expiration_date", nullable = false)
-        private Timestamp expirationDate;
+        private LocalDateTime expirationDate;
 
         @Column(name = "clicks", nullable = false)
         private int clicks;
@@ -46,13 +43,4 @@ public class LinkEntity {
         @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
         private UserEntity user;
 
-        public LinkEntity(String longLink, String shortLink, int userId, Timestamp creationDate, Timestamp expirationDate, int clicks, UserEntity user) {
-                this.longLink = longLink;
-                this.shortLink = shortLink;
-                this.userId = userId;
-                this.creationDate = creationDate;
-                this.expirationDate = expirationDate;
-                this.clicks = clicks;
-                this.user = user;
-        }
 }

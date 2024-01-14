@@ -8,13 +8,14 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private Integer id;
+    private UUID id;
     private String username;
     private Set<RoleEntity.UserRole> roles = new HashSet<>();
 }

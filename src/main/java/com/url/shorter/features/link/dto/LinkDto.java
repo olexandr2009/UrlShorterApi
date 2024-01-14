@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @Data
 @RequiredArgsConstructor
-@Builder
+//@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LinkDto {
 
