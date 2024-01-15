@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userRepository.existsByUsername(username)) {
             throw new UserAlreadyExistException(username);
         }
-
         UserEntity user = new UserEntity(username, encoder.encode(password));
         Set<RoleEntity> roleEntities = roleRepository.findByNames(Collections.singleton(RoleEntity.UserRole.ROLE_USER));
         user.setRoles(roleEntities);
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userRepository.existsByUsername(updateUserDto.getNewUsername())) {
             throw new UserAlreadyExistException(updateUserDto.getNewUsername());
         }
-        if (user.getPassword().equals(encoder.encode(updateUserDto.getOldPassword()))) {
+        if (encoder.matches(updateUserDto.getOldPassword(), user.getPassword())) {
             user.setUsername(updateUserDto.getNewUsername());
             user.setPassword(encoder.encode(updateUserDto.getNewPassword()));
             return userMapper.toUserDto(userRepository.save(user));
@@ -85,6 +84,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         Set<RoleEntity> roleEntities = roleRepository.findByNames(roles);
+        System.out.println(roleEntities);
         user.setRoles(roleEntities);
         return userMapper.toUserDto(userRepository.save(user));
     }
