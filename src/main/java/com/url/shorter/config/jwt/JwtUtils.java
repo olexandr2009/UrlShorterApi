@@ -30,7 +30,7 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setId(userPrincipal.getId().toString())
+                .setId(userPrincipal.getUuid().toString())
                 .setSubject((userPrincipal.getUsername()))
                 .claim("Authorities", userPrincipal.getAuthorities())
                 .setIssuedAt(new Date())

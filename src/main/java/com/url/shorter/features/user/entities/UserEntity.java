@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,9 +20,9 @@ import java.util.Set;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column
-    private Integer id;
+    private UUID id;
 
     @NotBlank
     @Size(max = 20)

@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -15,7 +16,7 @@ class JwtUtilsTest {
     @Autowired
     JwtUtils jwtUtils;
     private String jwtToken;
-    private final int id = 1;
+    private final UUID id = UUID.randomUUID();
     private final String username = "user";
     private final List<GrantedAuthority> authorities = List.of();
     private final String pass = "pass";
