@@ -1,26 +1,29 @@
-package com.url.shorter;
+package com.url.shorter.config;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class Prefs {
-    public static final String DEFAULT_PREFS_FILENAME = "prefs.json";
+    public static final String DEFAULT_PREFS_FILENAME = "/prefs.json";
     public static final String NAME_OF_RESOURCE = "nameOfSite";
-
+    public static final String LINK_SIZE = "linkSize";
     private Map<String, Object> prefs = new HashMap<>();
+    private InputStream inputStream;
 
     public Prefs(){
-        this(DEFAULT_PREFS_FILENAME);
+        this(Prefs.DEFAULT_PREFS_FILENAME);
     }
     public Prefs(String filename){
         try {
-            String json = String.join("\n", Files.readAllLines(Paths.get(filename)));
+            this.inputStream = Prefs.class.getResourceAsStream(filename);
+            String json = new String(inputStream.readAllBytes());
 
             TypeToken<?> typeToken = TypeToken.getParameterized(Map.class, String.class, Object.class);
 

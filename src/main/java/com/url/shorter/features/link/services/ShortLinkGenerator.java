@@ -1,6 +1,7 @@
 package com.url.shorter.features.link.services;
 
-import com.url.shorter.Prefs;
+import com.url.shorter.config.Prefs;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -8,9 +9,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class ShortLinkGenerator {
+    @Autowired
+    private final Prefs prefs = new Prefs();
     private static final String symbolsString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final int linkSize = 8;
-    public static final String resource = new Prefs().getString(Prefs.NAME_OF_RESOURCE);
+    private final int linkSize = (int) Double.parseDouble(prefs.getString(Prefs.LINK_SIZE));
+    public final String resource = prefs.getString(Prefs.NAME_OF_RESOURCE);
+
     public String shortLinkGenerator(String longLink) {
 
         String[] protocol = longLink.split("//");
@@ -19,6 +23,6 @@ public class ShortLinkGenerator {
                 .mapToObj(symbolsString::charAt)
                 .map(Object::toString)
                 .collect(Collectors.joining());
-        return protocol[0]+resource+newLink;
+        return protocol[0]+"//"+resource+"/"+newLink;
     }
 }
