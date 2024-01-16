@@ -1,5 +1,6 @@
 package com.url.shorter.features.link.services;
 
+import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,25 +13,30 @@ import java.util.Optional;
 public class LinkServiceImpl {
     private final LinkRepository linkRepository;
 
-    public LinkEntity createByLongLink(LinkEntity linkEntity) {
-        if (linkEntity == null || linkEntity.getLongLink() == null) {
+    public LinkDto createByLongLink(LinkDto linkDto) {
+        if (linkDto == null || linkDto.getOriginUrl() == null) {
             throw new IllegalArgumentException("Invalid input data for creating a link.");
         }
 
-        return linkRepository.save(linkEntity);
+        //additional logic for generating a new link
+
+        LinkEntity linkEntity = linkRepository.save(linkDto.toEntity());
+        return LinkDto.fromEntity(linkEntity);
     }
 
-    public LinkEntity updateByLongLink(LinkEntity linkEntity) {
-        Optional<LinkEntity> existingLink = linkRepository.findByLongLink(linkEntity.getLongLink());
+    public LinkDto updateByLongLink(LinkDto linkDto) {
+        Optional<LinkEntity> existingLink = linkRepository.findByLongLink(linkDto.getOriginUrl());
         if (existingLink.isEmpty()) {
             throw new IllegalArgumentException("Link with the provided long link does not exist.");
         }
 
-        return linkRepository.save(linkEntity);
+        LinkEntity linkEntity = linkRepository.save(linkDto.toEntity());
+        return LinkDto.fromEntity(linkEntity);
     }
 
-    public Optional<LinkEntity> findByLongLink(String longLink) {
-        return linkRepository.findByLongLink(longLink);
+    public Optional<LinkDto> findByLongLink(String longLink) {
+        return linkRepository.findByLongLink(longLink)
+                .map(LinkDto::fromEntity);
     }
 
     public void deleteByLongLink(String longLink) {
