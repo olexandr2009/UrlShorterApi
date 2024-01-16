@@ -3,6 +3,7 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class LinkServiceImpl implements LinkService{
     private final LinkRepository linkRepository;
 
+    @Transactional
     @Override
     public LinkDto createByLongLink(LinkDto linkDto) {
         if (linkDto == null || linkDto.getOriginUrl() == null) {
@@ -25,6 +27,7 @@ public class LinkServiceImpl implements LinkService{
         return LinkDto.fromEntity(linkEntity);
     }
 
+    @Transactional
     @Override
     public LinkDto updateByLongLink(LinkDto linkDto) {
         Optional<LinkEntity> existingLink = linkRepository.findByLongLink(linkDto.getOriginUrl());
@@ -34,7 +37,6 @@ public class LinkServiceImpl implements LinkService{
 
         LinkEntity existingEntity = existingLink.get();
         existingEntity.setShortLink(linkDto.getShortUrl());
-        existingEntity.setCreationDate(linkDto.getCreationDate());
         existingEntity.setExpirationDate(linkDto.getExpirationDate());
         existingEntity.setClicks(linkDto.getOpenCount());
 
@@ -48,6 +50,7 @@ public class LinkServiceImpl implements LinkService{
                 .map(LinkDto::fromEntity);
     }
 
+    @Transactional
     @Override
     public void deleteByLongLink(String longLink) {
         Optional<LinkEntity> linkToDelete = linkRepository.findByLongLink(longLink);
