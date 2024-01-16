@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "l_link_s_link")
@@ -43,6 +44,4 @@ public class LinkEntity {
         @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
         private UserEntity user;
 
-        public LinkEntity(UUID id, String shortUrl, String originUrl, LocalDateTime creationDate, LocalDateTime expirationDate, Integer openCount, UUID userId) {
-        }
 }

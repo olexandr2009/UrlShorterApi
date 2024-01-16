@@ -1,10 +1,8 @@
 package com.url.shorter.features.link.dto;
 
 import com.url.shorter.features.link.entities.LinkEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import com.url.shorter.features.user.entities.UserEntity;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
@@ -14,7 +12,8 @@ import java.util.UUID;
  * Link DTO (data transfer object)
  */
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LinkDto {
@@ -28,7 +27,15 @@ public class LinkDto {
     UUID userId;
 
     public LinkEntity toEntity() {
-        return new LinkEntity(id, shortUrl, originUrl, creationDate, expirationDate, openCount, userId);
+        return LinkEntity.builder()
+                .id(id)
+                .shortLink(shortUrl)
+                .longLink(originUrl)
+                .creationDate(creationDate)
+                .expirationDate(expirationDate)
+                .clicks(openCount)
+                .user(UserEntity.builder().id(userId).build())
+                .build();
     }
 
     public static LinkDto fromEntity(LinkEntity linkEntity) {
