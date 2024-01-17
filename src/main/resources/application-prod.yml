@@ -1,0 +1,31 @@
+# Prod profile configuration
+# PostgreSQL Configuration
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/urlshorter
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# Flyway Configuration
+  flyway:
+    locations: classpath:db/migration,classpath:db/prod-migration
+
+# Swagger Configuration
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  version: 1.0
+
+# Server Port
+server:
+  port: 9999
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your_prod_secret_key}
+  expiration-time: ${JWT_EXPIRATION_TIME:86400000}

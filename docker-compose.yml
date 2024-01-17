@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:alpine
+    container_name: db-1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: urlshorter
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
