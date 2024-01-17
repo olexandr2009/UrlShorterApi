@@ -1,5 +1,6 @@
 package com.url.shorter.features.link.controllers;
 
+import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.services.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class LinkController {
     private LinkService linkService;
 
     @GetMapping("/{shortLink}")
-    public ResponseEntity<LinkEntity> findLinkByShortLink(@PathVariable String shortLink) {
+    public ResponseEntity<LinkDto> findLinkByShortLink(@PathVariable String shortLink) {
         String originalLink = String.valueOf(linkService.findByShortLink(shortLink));
-        return (ResponseEntity<LinkEntity>) ResponseEntity.ok();
+        return (ResponseEntity<LinkDto>) ResponseEntity.ok();
     }
 
     @DeleteMapping("/delete/{shortLink}")
