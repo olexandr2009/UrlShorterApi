@@ -65,8 +65,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throws UserNotFoundException, UserIncorrectPasswordException, UserAlreadyExistException {
         UserEntity user = userRepository.findByUsername(updateUserDto.getOldUsername())
                 .orElseThrow(() -> new UserNotFoundException(updateUserDto.getOldUsername()));
-        if (userRepository.existsByUsername(updateUserDto.getNewUsername())) {
-            throw new UserAlreadyExistException(updateUserDto.getOldUsername());
+        if (!Objects.equals(updateUserDto.getNewUsername(), updateUserDto.getOldUsername()) && userRepository.existsByUsername(updateUserDto.getNewUsername())) {
+            throw new UserAlreadyExistException(updateUserDto.getNewUsername());
         }
         if (user.getPassword().equals(encoder.encode(updateUserDto.getOldPassword())) &&
                 Objects.nonNull(userId) && userId.equals(user.getId())) {

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -58,13 +57,13 @@ public class WebSecurityConfig {
                         auth
                                 .requestMatchers(
                                         "/V1/auth/**",
-                                        "/V3/api-docs",
+                                        "/v3/api-docs",
                                         "/swagger-ui.html",
                                         "/swagger-ui/**",
                                         "/swagger-resources/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
-                ).formLogin(Customizer.withDefaults());
+                );
 
         http.authenticationProvider(provider);
 
