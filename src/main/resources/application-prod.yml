@@ -2,24 +2,28 @@
 # PostgreSQL Configuration
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/urlshorter
     driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/urlshorterdb
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+# JPA and Hibernate setup for PostgreSQL
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
 
 # Flyway Configuration
   flyway:
-    locations: classpath:db/migration,classpath:db/prod-migration
+    url: jdbc:postgresql://localhost:5432/urlshorterdb
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
 # Swagger Configuration
 springdoc:
   swagger-ui:
+    disable-swagger-default-url: true
     path: /swagger-ui.html
-  version: 1.0
 
 # Server Port
 server:

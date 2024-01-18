@@ -1,4 +1,4 @@
-# Project "URLShortenerAPI"
+# Project "URLShorterAPI"
 
 This project implements a web service for URL shortening. The user can create short URLs and use them to go to the corresponding original addresses.
 

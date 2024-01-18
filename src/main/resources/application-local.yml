@@ -2,12 +2,14 @@
 # H2 Configuration
 spring:
   datasource:
+    url: jdbc:h2:mem:urlshorterdb
     username: sa
-    generate-unique-name: false
-    name: urlshorter
+    password:
   h2:
     console:
       enabled: true
+
+# JPA and Hibernate setup for H2
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,13 +17,15 @@ spring:
 
 # Flyway Configuration
   flyway:
-    locations: classpath:db/migration,classpath:db/test-migration
+    url: jdbc:h2:mem:urlshorterdb
+    user: sa
+    password:
 
 # Swagger Configuration
 springdoc:
   swagger-ui:
+    disable-swagger-default-url: true
     path: /swagger-ui.html
-  version: 1.0
 
 # Server Port
 server:
