@@ -3,11 +3,15 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
+import com.url.shorter.features.user.dtos.UserDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -59,5 +63,12 @@ public class LinkServiceImpl implements LinkService{
         }
 
         linkRepository.delete(linkToDelete.get());
+    }
+    @Override
+    public List<LinkDto> findAllLinks(UUID userId){
+        List<LinkEntity> allLinks = linkRepository.findAllLinks(userId);
+        return allLinks.stream()
+                .map(LinkDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }
