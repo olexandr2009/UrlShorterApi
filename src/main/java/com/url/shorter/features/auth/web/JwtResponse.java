@@ -27,6 +27,6 @@ public class JwtResponse {
     @Schema(description = "Logged Username")
     private String username;
 
-    @Schema(description = "Username to login with")
+    @Schema(description = "List of user roles")
     private List<String> roles = new ArrayList<>();
 }
