@@ -1,0 +1,4 @@
+# Profile configuration
+spring:
+  profiles:
+    active: prod

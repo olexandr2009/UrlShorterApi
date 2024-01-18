@@ -1,0 +1,37 @@
+# Local profile configuration
+# H2 Configuration
+spring:
+  datasource:
+    url: jdbc:h2:mem:urlshorterdb
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+# JPA and Hibernate setup for H2
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# Flyway Configuration
+  flyway:
+    url: jdbc:h2:mem:urlshorterdb
+    user: sa
+    password:
+
+# Swagger Configuration
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /swagger-ui.html
+
+# Server Port
+server:
+  port: 9999
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your_prod_secret_key}
+  expiration-time: ${JWT_EXPIRATION_TIME:86400000}
