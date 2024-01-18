@@ -72,12 +72,14 @@ public class AuthControllerUnitTest {
         assertEquals(ResponseEntity.accepted().build(), authController.registerUser(signUpRequest));
     }
     private LoginRequest createTestLoginRequest() {
+        System.out.println("testing");
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setPassword("test_password");
         loginRequest.setUsername("test_username");
         return loginRequest;
     }
     private SignupRequest createTestSignUpRequest() {
+        System.out.println("testing");
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setPassword("test_password");
         signupRequest.setUsername("test_username");

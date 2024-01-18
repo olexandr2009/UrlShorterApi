@@ -54,6 +54,7 @@ class AuthControllerIntegrationTest {
     }
 
     private LoginRequest createTestLoginRequest(String username, String password) {
+        System.out.println("testing");
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setPassword(password);
         loginRequest.setUsername(username);
@@ -61,6 +62,7 @@ class AuthControllerIntegrationTest {
     }
 
     private SignupRequest createTestSignUpRequest(String username, String password) {
+        System.out.println("testing");
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setPassword(password);
         signupRequest.setUsername(username);
