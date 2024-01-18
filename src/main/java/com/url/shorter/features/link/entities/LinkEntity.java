@@ -44,4 +44,10 @@ public class LinkEntity {
         @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
         private UserEntity user;
 
+        public LinkEntity(UUID id, String longLink, String shortLink, UserEntity user) {
+                this.id = id;
+                this.longLink = longLink;
+                this.shortLink = shortLink;
+                this.user = user;
+        }
 }
