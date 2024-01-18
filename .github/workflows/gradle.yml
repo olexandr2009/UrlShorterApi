@@ -22,13 +22,4 @@ jobs:
         uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
 
       - name: Run test
-        run: ./gradlew test
-
-      - name: Store reports
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: reports
-          path: |
-            **/build/reports/
-            **/build/test-results/
+        run: ./gradlew test -i
