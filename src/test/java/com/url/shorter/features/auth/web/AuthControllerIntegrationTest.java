@@ -54,6 +54,7 @@ class AuthControllerIntegrationTest {
     }
 
     private LoginRequest createTestLoginRequest(String username, String password) {
+        System.out.println("test running");
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setPassword(password);
         loginRequest.setUsername(username);
