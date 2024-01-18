@@ -10,4 +10,5 @@ public class UrlShorterApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(UrlShorterApiApplication.class, args);
     }
+
 }
