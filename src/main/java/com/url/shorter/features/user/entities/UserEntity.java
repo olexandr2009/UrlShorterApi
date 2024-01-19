@@ -37,7 +37,12 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private final Set<RoleEntity> roles = new HashSet<>();
+
+    private Set<RoleEntity> roles = new HashSet<>();
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
+    }
 
     public UserEntity(String username, String password) {
         this.username = username;
