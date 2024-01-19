@@ -13,6 +13,7 @@ import java.util.Optional;
 @Service
 public class LinkServiceImpl implements LinkService{
     private final LinkRepository linkRepository;
+    private final ShortLinkGenerator shortLinkGenerator;
 
     @Transactional
     @Override
@@ -21,9 +22,11 @@ public class LinkServiceImpl implements LinkService{
             throw new IllegalArgumentException("Invalid input data for creating a link.");
         }
 
-        //additional logic for generating a new link
+        String shortLink = shortLinkGenerator.shortLinkGenerator(linkDto.getOriginUrl());
 
         LinkEntity linkEntity = linkRepository.save(linkDto.toEntity());
+        linkEntity.setShortLink(shortLink);
+
         return LinkDto.fromEntity(linkEntity);
     }
 
