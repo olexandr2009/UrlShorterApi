@@ -12,5 +12,5 @@ public interface LinkService {
     LinkDto updateByLongLink(LinkDto linkDto);
     Optional<LinkDto> findByLongLink(String longLink);
     void deleteByLongLink(String longLink);
-    List<LinkDto> findAllLinks(UserEntity userEntity);
+    List<LinkDto> findAllLinks(UUID userId);
 }

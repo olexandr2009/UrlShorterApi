@@ -16,5 +16,5 @@ import java.util.UUID;
 public interface LinkRepository extends JpaRepository<LinkEntity, UUID> {
     Optional<LinkEntity> findByLongLink(String longLink);
     void deleteByLongLink(String longLink);
-    List<LinkEntity> findByUserId(UserEntity userEntity);
+    List<LinkEntity> findByUserId(UUID userId);
 }

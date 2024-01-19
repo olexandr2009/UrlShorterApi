@@ -6,16 +6,25 @@ import com.url.shorter.features.link.repositories.LinkRepository;
 import com.url.shorter.features.user.entities.UserEntity;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Service
 public class LinkServiceImpl implements LinkService{
+
     private final LinkRepository linkRepository;
+
+    @Autowired
+    public LinkServiceImpl(LinkRepository linkRepository) {
+        this.linkRepository = linkRepository;
+    }
 
     @Transactional
     @Override
@@ -65,9 +74,9 @@ public class LinkServiceImpl implements LinkService{
     }
 
     @Override
-    public List<LinkDto> findAllLinks(UserEntity userEntity) {
-        List<LinkEntity> allLinks = linkRepository.findByUserId(userEntity);
-        return allLinks.stream()
+    public List<LinkDto> findAllLinks(UUID userId) {
+        List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
+        return linkEntities.stream()
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
     }

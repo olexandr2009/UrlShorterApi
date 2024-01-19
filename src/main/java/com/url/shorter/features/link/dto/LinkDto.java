@@ -34,7 +34,7 @@ public class LinkDto {
                 .creationDate(creationDate)
                 .expirationDate(expirationDate)
                 .clicks(openCount)
-                .user(UserEntity.builder().id(userId).build())
+                .userId(userId)
                 .build();
     }
 
@@ -46,7 +46,7 @@ public class LinkDto {
                 .creationDate(linkEntity.getCreationDate())
                 .openCount(linkEntity.getClicks())
                 .expirationDate(linkEntity.getExpirationDate())
-                .userId(linkEntity.getUser() != null ? linkEntity.getUser().getId() : null)
+                .userId(linkEntity.getUserId()!= null ? linkEntity.getUserId(): null)
                 .build();
     }
 }
