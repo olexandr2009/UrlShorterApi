@@ -8,8 +8,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,7 +72,8 @@ public class LinkServiceImpl implements LinkService{
     }
 
     @Override
-    public List<LinkDto> findAllLinks(UUID userId) {
+    public List<LinkDto> findAllLinks(UserEntity userEntity) {
+        UUID userId = userEntity.getId();
         List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
         return linkEntities.stream()
                 .map(LinkDto::fromEntity)

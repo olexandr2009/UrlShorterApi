@@ -23,7 +23,7 @@ public class LinkDto {
     String originUrl;
     LocalDateTime creationDate;
     LocalDateTime expirationDate;
-    Integer openCount;
+    int openCount;
     UUID userId;
 
     public LinkEntity toEntity() {
@@ -34,7 +34,7 @@ public class LinkDto {
                 .creationDate(creationDate)
                 .expirationDate(expirationDate)
                 .clicks(openCount)
-                .userId(userId)
+                .user(UserEntity.builder().id(userId).build())
                 .build();
     }
 
@@ -46,7 +46,7 @@ public class LinkDto {
                 .creationDate(linkEntity.getCreationDate())
                 .openCount(linkEntity.getClicks())
                 .expirationDate(linkEntity.getExpirationDate())
-                .userId(linkEntity.getUserId()!= null ? linkEntity.getUserId(): null)
+                .userId(linkEntity.getUser() != null ? linkEntity.getUser().getId() : null)
                 .build();
     }
 }
