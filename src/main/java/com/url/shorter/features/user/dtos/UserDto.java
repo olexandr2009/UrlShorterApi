@@ -18,4 +18,8 @@ public class UserDto {
     private UUID id;
     private String username;
     private Set<RoleEntity.UserRole> roles = new HashSet<>();
+
+    public UserDto(UUID id) {
+        this.id = id;
+    }
 }

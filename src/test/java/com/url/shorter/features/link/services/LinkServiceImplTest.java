@@ -3,6 +3,7 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
+import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.entities.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +36,10 @@ public class LinkServiceImplTest {
     @Test
     void testFindAllLinks() {
 
-        // Для генерації тестових даних
+        // Генерація даних для тесту
         UUID userId = UUID.randomUUID();
+        UserDto userDto = new UserDto(userId);
+
         List<LinkEntity> linkEntities = Arrays.asList(
                 new LinkEntity(UUID.randomUUID(), "long1", "short1", new UserEntity(userId), LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0),
                 new LinkEntity(UUID.randomUUID(), "long2", "short2", new UserEntity(userId), LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0)
@@ -45,7 +48,7 @@ public class LinkServiceImplTest {
         when(linkRepository.findByUserId(any())).thenReturn(linkEntities);
 
         // Виклик методу
-        List<LinkDto> result = linkService.findAllLinks(new UserEntity(userId));
+        List<LinkDto> result = linkService.findAllLinks(userDto);
 
         // Перевірка
         assertEquals(linkEntities.size(), result.size());

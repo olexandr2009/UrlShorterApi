@@ -3,9 +3,8 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
-import com.url.shorter.features.user.entities.UserEntity;
+import com.url.shorter.features.user.dtos.UserDto;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -72,8 +71,8 @@ public class LinkServiceImpl implements LinkService{
     }
 
     @Override
-    public List<LinkDto> findAllLinks(UserEntity userEntity) {
-        UUID userId = userEntity.getId();
+    public List<LinkDto> findAllLinks(UserDto userDto) {
+        UUID userId = userDto.getId();
         List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
         return linkEntities.stream()
                 .map(LinkDto::fromEntity)
