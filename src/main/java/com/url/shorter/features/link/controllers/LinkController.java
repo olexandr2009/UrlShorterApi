@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/links")
+@RequestMapping("/V1/api/links")
 public class LinkController {
 
     private final LinkService linkService;
