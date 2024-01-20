@@ -26,26 +26,20 @@ public class LinkController {
     @PostMapping("/saveLongLink")
     public ResponseEntity<LinkDto> saveLongLink(
             @RequestParam String longLink,
-            @RequestParam(required = false) String shortLink,
-            @RequestParam(required = false) LocalDateTime dateCreate,
             @RequestParam(required = false) LocalDateTime dateExp,
-            @RequestParam(required = false) Integer clicks,
             @RequestParam(required = false) String user
     ) {
         try {
-            if (shortLink == null || shortLink.isEmpty()) {
-                shortLink = shortLinkGenerator.shortLinkGenerator(longLink);
-            }
             LinkDto linkDto = LinkDto.builder()
                     .originUrl(longLink)
-                    .shortUrl(shortLink)
-                    .creationDate(dateCreate)
+                    .shortUrl(null)
+                    .creationDate(LocalDateTime.now())
                     .expirationDate(dateExp)
-                    .openCount(clicks)
+                    .openCount(0)
                     .userId(UUID.fromString(user))
                     .build();
 
-            LinkDto savedLink = linkService.createByLongLink(null);
+            LinkDto savedLink = linkService.createByLongLink(linkDto);
 
             return new ResponseEntity<>(savedLink, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
