@@ -3,6 +3,7 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
+import com.url.shorter.features.user.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class LinkServiceImpl implements LinkService{
     private final LinkRepository linkRepository;
     private final ShortLinkGenerator shortLinkGenerator;
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
@@ -24,10 +26,13 @@ public class LinkServiceImpl implements LinkService{
 
         String shortLink = shortLinkGenerator.shortLinkGenerator(linkDto.getOriginUrl());
 
-        LinkEntity linkEntity = linkRepository.save(linkDto.toEntity());
-        linkEntity.setShortLink(shortLink);
+        LinkEntity entity = linkDto.toEntity();
 
-        return LinkDto.fromEntity(linkEntity);
+        entity.setShortLink(shortLink);
+        entity.setUser(userRepository.findById(linkDto.getUserId()).orElseThrow());
+        entity = linkRepository.saveAndFlush(entity);
+
+        return LinkDto.fromEntity(entity);
     }
 
     @Transactional
