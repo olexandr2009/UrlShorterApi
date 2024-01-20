@@ -8,11 +8,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class LinkServiceImpl implements LinkService{
     private final LinkRepository linkRepository;
+
+    @Transactional
+    @Override
+    public List<LinkDto> findAll() {
+        List<LinkEntity> allLinks = linkRepository.findAll();
+        return allLinks.stream()
+                .map(LinkDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
     @Override
