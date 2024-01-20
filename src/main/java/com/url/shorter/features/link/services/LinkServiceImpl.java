@@ -80,4 +80,9 @@ public class LinkServiceImpl implements LinkService{
 
         linkRepository.delete(linkToDelete.get());
     }
+
+    @Override
+    public List<LinkDto> findActiveLinks() {
+        return null;
+    }
 }
