@@ -23,7 +23,7 @@ public class LinkDto {
     String originUrl;
     LocalDateTime creationDate;
     LocalDateTime expirationDate;
-    Integer openCount;
+    int openCount;
     UUID userId;
 
     public LinkEntity toEntity() {
