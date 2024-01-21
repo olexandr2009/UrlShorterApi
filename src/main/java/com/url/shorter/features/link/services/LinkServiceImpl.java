@@ -4,6 +4,7 @@ import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
 import com.url.shorter.features.user.dtos.UserDto;
+import com.url.shorter.features.user.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,18 @@ import java.util.stream.Collectors;
 public class LinkServiceImpl implements LinkService{
 
     private final LinkRepository linkRepository;
+    private final ShortLinkGenerator shortLinkGenerator;
+    private final UserRepository userRepository;
+
+    @Transactional
+    @Override
+    public List<LinkDto> findAll() {
+        List<LinkEntity> allLinks = linkRepository.findAll();
+        return allLinks.stream()
+                .map(LinkDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 
     @Autowired
     public LinkServiceImpl(LinkRepository linkRepository) {
@@ -30,10 +43,15 @@ public class LinkServiceImpl implements LinkService{
             throw new IllegalArgumentException("Invalid input data for creating a link.");
         }
 
-        //additional logic for generating a new link
+        String shortLink = shortLinkGenerator.shortLinkGenerator(linkDto.getOriginUrl());
 
-        LinkEntity linkEntity = linkRepository.save(linkDto.toEntity());
-        return LinkDto.fromEntity(linkEntity);
+        LinkEntity entity = linkDto.toEntity();
+
+        entity.setShortLink(shortLink);
+        entity.setUser(userRepository.findById(linkDto.getUserId()).orElseThrow());
+        entity = linkRepository.saveAndFlush(entity);
+
+        return LinkDto.fromEntity(entity);
     }
 
     @Transactional
