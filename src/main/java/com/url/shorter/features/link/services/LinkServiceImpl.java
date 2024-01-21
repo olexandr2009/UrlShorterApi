@@ -116,19 +116,19 @@ public class LinkServiceImpl implements LinkService {
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
     @Override
-    public void redirect(String shortLink, HttpServletResponse response) throws IOException {
-        Optional<LinkEntity> linkEntityOptional = linkRepository.findByShortLink(shortLink);
+    public LinkDto redirect(String shortUrl) {
+        Optional<LinkEntity> linkEntityOptional = linkRepository.findByShortLink(shortUrl);
 
         if (linkEntityOptional.isEmpty()) {
-            throw new IllegalArgumentException("Can't find current short link in DB");
+            throw new IllegalArgumentException("Can`t find current short link in DB");
         }
-
         LinkEntity linkEntity = linkEntityOptional.get();
+
         linkEntity.setClicks(linkEntity.getClicks() + 1);
         linkRepository.save(linkEntity);
 
-        String longLink = linkEntity.getLongLink();
-        response.sendRedirect(longLink);
+        return LinkDto.fromEntity(linkEntity);
     }
 }

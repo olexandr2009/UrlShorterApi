@@ -20,5 +20,5 @@ public interface LinkService {
     Optional<LinkDto> findByShortLink(String shortLink);
     void deleteByShortLink(String shortLink);
     List<LinkDto> findAllLinks(UserDto userDto);
-    void redirect(String shortLink, HttpServletResponse response) throws IOException;
+    LinkDto redirect(String shortUrl);
 }

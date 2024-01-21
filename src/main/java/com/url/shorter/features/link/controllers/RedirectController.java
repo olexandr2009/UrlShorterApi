@@ -1,5 +1,6 @@
 package com.url.shorter.features.link.controllers;
 
+import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.services.LinkService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,11 @@ public class RedirectController {
 
     @GetMapping("/{shortLink}")
     public void redirectToLongLink(@PathVariable String shortLink, HttpServletResponse response) throws IOException {
-        linkService.redirect(shortLink, response);
+        LinkDto linkDto = linkService.redirect(shortLink);
+        if (linkDto != null) {
+            response.sendRedirect(linkDto.getLongLink());
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Short link not found");
+        }
     }
 }

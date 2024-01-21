@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -60,9 +61,8 @@ public class LinkServiceImplTest {
         // Перевірка findByUserId
         verify(linkRepository, times(1)).findByUserId(userId);
     }
-
     @Test
-    public void testRedirect_ExistingShortLink_Success() throws IOException {
+    public void testRedirect_ExistingShortLink_Success() {
         // Генерація
         String shortLink = "abc123";
         String longLink = "https://www.example.com";
@@ -72,9 +72,13 @@ public class LinkServiceImplTest {
         when(linkRepository.findByShortLink(shortLink)).thenReturn(Optional.of(linkEntity));
 
         // Виклик
-        linkService.redirect(shortLink, mock(HttpServletResponse.class));
+        LinkDto linkDto = linkService.redirect(shortLink);
 
         // Перевірка
+        assertNotNull(linkDto);
+        assertEquals(longLink, linkDto.getLongLink());
+
+        // Перевірка save
         verify(linkRepository, times(1)).save(linkEntity);
     }
 
@@ -85,8 +89,9 @@ public class LinkServiceImplTest {
         when(linkRepository.findByShortLink(nonExistingShortUrl)).thenReturn(Optional.empty());
 
         // Перевірка
-        assertThrows(IllegalArgumentException.class, () -> linkService.redirect(nonExistingShortUrl, mock(HttpServletResponse.class)));
-        // Перевірка що save змінюється без короткої лінки
+        assertThrows(IllegalArgumentException.class, () -> linkService.redirect(nonExistingShortUrl));
+
+        // Перевірка, що save не буде без shortLink
         verify(linkRepository, never()).save(any());
     }
 }
