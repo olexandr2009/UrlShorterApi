@@ -89,6 +89,10 @@ public class LinkServiceImpl implements LinkService{
     }
 
     @Override
+    public List<LinkDto> findActiveLinks() {
+        return null;
+    }
+  
     public Optional<LinkDto> findByShortLink(String shortLink) {
         return linkRepository.findByShortLink(shortLink)
                 .map(LinkDto::fromEntity);
@@ -103,7 +107,7 @@ public class LinkServiceImpl implements LinkService{
         // Delete Entity from DB
         linkRepository.delete(linkEntity);
     }
-  
+    
     public List<LinkDto> findAllLinks(UserDto userDto) {
         UUID userId = userDto.getId();
         List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);

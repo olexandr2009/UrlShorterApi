@@ -3,8 +3,10 @@ package com.url.shorter.features.link.controllers;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.services.LinkService;
 import com.url.shorter.features.link.services.ShortLinkGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -57,5 +59,17 @@ public class LinkController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<LinkDto>> findActiveLinks() {
+        List<LinkDto> activeLinks = linkService.findActiveLinks();
+        return ResponseEntity.ok(activeLinks);
+    }
+
+    @DeleteMapping("/delete/{longLink}")
+    public ResponseEntity<Void> deleteByLongLink(@PathVariable String longLink) {
+        linkService.deleteByLongLink(longLink);
+        return ResponseEntity.ok().build();
     }
 }
