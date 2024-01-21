@@ -106,11 +106,26 @@ public class LinkServiceImpl implements LinkService {
         linkRepository.delete(linkEntity);
     }
 
+    @Override
     public List<LinkDto> findAllLinks(UserDto userDto) {
         UUID userId = userDto.getId();
         List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
         return linkEntities.stream()
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public LinkDto redirect(String shortUrl) {
+        Optional<LinkEntity> linkEntityOptional = linkRepository.findByShortLink(shortUrl);
+
+        if (linkEntityOptional.isEmpty()) {
+            throw new IllegalArgumentException("Can`t find current short link in DB");
+        }
+        LinkEntity linkEntity = linkEntityOptional.get();
+
+        linkEntity.setClicks(linkEntity.getClicks() + 1);
+        linkRepository.save(linkEntity);
+
+        return LinkDto.fromEntity(linkEntity);
     }
 }
