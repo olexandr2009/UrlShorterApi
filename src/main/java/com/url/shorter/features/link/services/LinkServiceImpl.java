@@ -89,6 +89,21 @@ public class LinkServiceImpl implements LinkService{
     }
 
     @Override
+    public Optional<LinkDto> findByShortLink(String shortLink) {
+        return linkRepository.findByShortLink(shortLink)
+                .map(LinkDto::fromEntity);
+    }
+
+    @Transactional
+    @Override
+    public void deleteByShortLink(String shortLink) {
+        // Get link entity from DB. Throw exception if entity is missing
+        LinkEntity linkEntity = linkRepository.findByShortLink(shortLink)
+                .orElseThrow(() -> new IllegalArgumentException("Link with the provided short link does not exist."));
+        // Delete Entity from DB
+        linkRepository.delete(linkEntity);
+    }
+  
     public List<LinkDto> findAllLinks(UserDto userDto) {
         UUID userId = userDto.getId();
         List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
