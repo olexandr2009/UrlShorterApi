@@ -1,7 +1,6 @@
 package com.url.shorter.features.link.repositories;
 
 import com.url.shorter.features.link.entities.LinkEntity;
-import com.url.shorter.features.user.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
