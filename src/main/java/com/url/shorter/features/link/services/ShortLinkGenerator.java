@@ -15,7 +15,7 @@ public class ShortLinkGenerator {
     private final int linkSize = (int) Double.parseDouble(prefs.getString(Prefs.LINK_SIZE));
     public final String resource = prefs.getString(Prefs.NAME_OF_RESOURCE);
 
-    public String shortLinkGenerator(String longLink) {
+    public String generate(String longLink) {
 
         String[] protocol = longLink.split("//");
 

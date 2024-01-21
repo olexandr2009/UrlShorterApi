@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-//@RequiredArgsConstructor
 @Service
 public class LinkServiceImpl implements LinkService {
     @Autowired
@@ -41,7 +40,7 @@ public class LinkServiceImpl implements LinkService {
             throw new IllegalArgumentException("Invalid input data for creating a link.");
         }
 
-        String shortLink = shortLinkGenerator.shortLinkGenerator(linkDto.getOriginUrl());
+        String shortLink = shortLinkGenerator.generate(linkDto.getOriginUrl());
 
         LinkEntity entity = linkDto.toEntity();
 
