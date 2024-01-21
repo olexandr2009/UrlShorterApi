@@ -84,7 +84,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         Set<RoleEntity> roleEntities = roleRepository.findByNames(roles);
-        System.out.println(roleEntities);
         user.setRoles(roleEntities);
         return userMapper.toUserDto(userRepository.save(user));
     }
