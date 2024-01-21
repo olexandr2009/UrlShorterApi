@@ -5,9 +5,9 @@ import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
 import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.entities.UserEntity;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.*;
 public class LinkServiceImplTest {
 
     @Autowired
-    private LinkServiceImpl linkService;
+    private LinkService linkService;
 
     @MockBean
     private LinkRepository linkRepository;
@@ -61,31 +62,32 @@ public class LinkServiceImplTest {
     }
 
     @Test
-    public void testRedirect_ExistingShortLink_Success() {
-        // Генерція даних
+    public void testRedirect_ExistingShortLink_Success() throws IOException {
+        // Генерація
         String shortLink = "abc123";
         String longLink = "https://www.example.com";
         LinkEntity linkEntity = new LinkEntity(shortLink, longLink);
-        linkEntity.setClicks(0); // Assuming clicks are initially zero
+        linkEntity.setClicks(0);
 
-        Mockito.when(linkRepository.findByShortLink(shortLink)).thenReturn(Optional.of(linkEntity));
+        when(linkRepository.findByShortLink(shortLink)).thenReturn(Optional.of(linkEntity));
 
         // Виклик
-        LinkDto result = linkService.redirect(shortLink);
+        linkService.redirect(shortLink, mock(HttpServletResponse.class));
 
         // Перевірка
-        Mockito.verify(linkRepository, Mockito.times(1)).save(linkEntity);
-        assertEquals(longLink, result.getOriginUrl());
+        verify(linkRepository, times(1)).save(linkEntity);
     }
 
     @Test
     public void testRedirect_NonExistingShortLink_ExceptionThrown() {
         // Генерація
         String nonExistingShortUrl = "nonexistent";
-        Mockito.when(linkRepository.findByShortLink(nonExistingShortUrl)).thenReturn(Optional.empty());
+        when(linkRepository.findByShortLink(nonExistingShortUrl)).thenReturn(Optional.empty());
 
         // Перевірка
-        assertThrows(IllegalArgumentException.class, () -> linkService.redirect(nonExistingShortUrl));
+        assertThrows(IllegalArgumentException.class, () -> linkService.redirect(nonExistingShortUrl, mock(HttpServletResponse.class)));
+        // Перевірка що save змінюється без короткої лінки
+        verify(linkRepository, never()).save(any());
     }
 }
 
