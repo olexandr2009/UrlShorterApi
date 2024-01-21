@@ -12,7 +12,7 @@ public class ShortLinkGenerator {
     @Autowired
     private final Prefs prefs = new Prefs();
     private static final String symbolsString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final int linkSize = (int) Double.parseDouble(prefs.getString(Prefs.LINK_SIZE));
+    final int linkSize = (int) Double.parseDouble(prefs.getString(Prefs.LINK_SIZE));
     public final String resource = prefs.getString(Prefs.NAME_OF_RESOURCE);
 
     public String shortLinkGenerator(String longLink) {
