@@ -3,18 +3,20 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
+import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.repositories.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Service
 public class LinkServiceImpl implements LinkService{
+
     private final LinkRepository linkRepository;
     private final ShortLinkGenerator shortLinkGenerator;
     private final UserRepository userRepository;
@@ -28,6 +30,11 @@ public class LinkServiceImpl implements LinkService{
                 .collect(Collectors.toList());
     }
 
+
+    @Autowired
+    public LinkServiceImpl(LinkRepository linkRepository) {
+        this.linkRepository = linkRepository;
+    }
 
     @Transactional
     @Override
@@ -84,5 +91,28 @@ public class LinkServiceImpl implements LinkService{
     @Override
     public List<LinkDto> findActiveLinks() {
         return null;
+    }
+  
+    public Optional<LinkDto> findByShortLink(String shortLink) {
+        return linkRepository.findByShortLink(shortLink)
+                .map(LinkDto::fromEntity);
+    }
+
+    @Transactional
+    @Override
+    public void deleteByShortLink(String shortLink) {
+        // Get link entity from DB. Throw exception if entity is missing
+        LinkEntity linkEntity = linkRepository.findByShortLink(shortLink)
+                .orElseThrow(() -> new IllegalArgumentException("Link with the provided short link does not exist."));
+        // Delete Entity from DB
+        linkRepository.delete(linkEntity);
+    }
+    
+    public List<LinkDto> findAllLinks(UserDto userDto) {
+        UUID userId = userDto.getId();
+        List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
+        return linkEntities.stream()
+                .map(LinkDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }
