@@ -1,5 +1,6 @@
 package com.url.shorter.features.link.services;
 
+import com.url.shorter.features.link.services.ShortLinkGenerator;
 import com.url.shorter.config.Prefs;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
