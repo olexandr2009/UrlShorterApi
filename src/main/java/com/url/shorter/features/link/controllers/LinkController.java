@@ -24,6 +24,18 @@ public class LinkController {
         this.shortLinkGenerator = shortLinkGenerator;
     }
 
+    @GetMapping("/{shortLink}")
+    public ResponseEntity<LinkDto> findLinkByShortLink(@PathVariable String shortLink) {
+        String originalLink = String.valueOf(linkService.findByShortLink(shortLink));
+        return (ResponseEntity<LinkDto>) ResponseEntity.ok();
+    }
+
+    @DeleteMapping("/delete/{shortLink}")
+    public ResponseEntity<Void> deleteByShortLink(@PathVariable String shortLink) {
+        linkService.deleteByShortLink(shortLink);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/saveLongLink")
     public ResponseEntity<LinkDto> saveLongLink(
             @RequestParam String longLink,

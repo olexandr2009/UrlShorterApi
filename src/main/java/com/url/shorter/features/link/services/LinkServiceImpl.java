@@ -5,10 +5,12 @@ import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
 import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.repositories.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -105,11 +107,27 @@ public class LinkServiceImpl implements LinkService {
         linkRepository.delete(linkEntity);
     }
 
+    @Override
     public List<LinkDto> findAllLinks(UserDto userDto) {
         UUID userId = userDto.getId();
         List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
         return linkEntities.stream()
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public LinkDto redirect(String shortUrl) {
+        Optional<LinkEntity> linkEntityOptional = linkRepository.findByShortLink(shortUrl);
+
+        if (linkEntityOptional.isEmpty()) {
+            throw new IllegalArgumentException("Can`t find current short link in DB");
+        }
+        LinkEntity linkEntity = linkEntityOptional.get();
+
+        linkEntity.setClicks(linkEntity.getClicks() + 1);
+        linkRepository.save(linkEntity);
+
+        return LinkDto.fromEntity(linkEntity);
     }
 }
