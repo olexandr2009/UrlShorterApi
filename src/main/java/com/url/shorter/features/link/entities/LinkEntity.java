@@ -50,4 +50,9 @@ public class LinkEntity {
                 this.expirationDate = expirationDate;
                 this.clicks = clicks;
         }
+
+        public LinkEntity(String shortLink, String longLink) {
+                this.shortLink = shortLink;
+                this.longLink = longLink;
+        }
 }

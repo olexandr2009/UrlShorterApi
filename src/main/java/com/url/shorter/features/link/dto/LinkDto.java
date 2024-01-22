@@ -49,4 +49,7 @@ public class LinkDto {
                 .userId(linkEntity.getUser() != null ? linkEntity.getUser().getId() : null)
                 .build();
     }
+    public String getLongLink() {
+        return originUrl;
+    }
 }
