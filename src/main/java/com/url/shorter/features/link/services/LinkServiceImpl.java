@@ -112,4 +112,9 @@ public class LinkServiceImpl implements LinkService {
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<Boolean> existsByShortLink(String shortLink) {
+        return Optional.of(linkRepository.existsByShortLink(shortLink));
+    }
 }
