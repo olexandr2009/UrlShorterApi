@@ -114,7 +114,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public Optional<Boolean> existsByShortLink(String shortLink) {
-        return Optional.of(linkRepository.existsByShortLink(shortLink));
+    public Boolean existsByShortLink(String shortLink) {
+        return linkRepository.existsByShortLink(shortLink);
     }
 }

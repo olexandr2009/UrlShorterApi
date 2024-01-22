@@ -17,5 +17,5 @@ public interface LinkService {
     Optional<LinkDto> findByShortLink(String shortLink);
     void deleteByShortLink(String shortLink);
     List<LinkDto> findAllLinks(UserDto userDto);
-    Optional<Boolean> existsByShortLink(String shortLink);
+    Boolean existsByShortLink(String shortLink);
 }
