@@ -27,6 +27,7 @@ public class ShortLinkGeneratorTest {
         assertEquals(linkGenerator.linkSize, shortLink.length() - "https://url.shorter.api/".length());
     }
 
+
     //Test for an exception when an invalid long link is entered
     @Test
     public void testInvalidLongLink() {
