@@ -98,5 +98,43 @@ public class LinkServiceImplTest {
         // Перевірка, що save не буде без shortLink
         verify(linkRepository, never()).save(any());
     }
+
+
+    @Test
+    void testFindActiveLinks() {
+
+        // Генерація даних для тесту
+        UUID userId = UUID.randomUUID();
+
+        UserDto userDto = new UserDto(userId);
+
+        List<LinkEntity> linkEntitiesUser1 = Arrays.asList(
+                new LinkEntity(UUID.randomUUID(),
+                        "long1",
+                        "short1",
+                        new UserEntity(userId),
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(7),
+                        0),
+                new LinkEntity(UUID.randomUUID(),
+                        "long2",
+                        "short2",
+                        new UserEntity(userId),
+                        LocalDateTime.now(),
+                        LocalDateTime.now().minusDays(7),
+                        0)
+        );
+
+        when(linkRepository.findByUserId(userId)).thenReturn(linkEntitiesUser1);
+
+        // Виклик методу
+        List<LinkDto> result = linkService.findActiveLinks(userDto);
+
+        // Перевірка
+        assertEquals(1, linkService.findActiveLinks(userDto).size());
+
+        // Перевірка findByUserId
+        verify(linkRepository, times(1)).findByUserId(userId);
+    }
 }
 
