@@ -3,10 +3,8 @@ package com.url.shorter.features.link.controllers;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.services.LinkService;
 import com.url.shorter.features.link.services.ShortLinkGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
