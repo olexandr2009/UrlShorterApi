@@ -44,4 +44,7 @@ public class UserEntity {
         this.username = username;
         this.password = password;
     }
+    public UserEntity(UUID userId) {
+        this.id = userId;
+    }
 }
