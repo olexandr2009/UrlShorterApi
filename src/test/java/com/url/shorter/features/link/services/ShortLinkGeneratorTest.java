@@ -1,6 +1,7 @@
 package com.url.shorter.features.link.services;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 //@RunWith(MockitoJUnitRunner.class)
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
 public class ShortLinkGeneratorTest {
     @Autowired
     private ShortLinkGenerator shortLinkGenerator;
