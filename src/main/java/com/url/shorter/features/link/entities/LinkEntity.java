@@ -52,5 +52,7 @@ public class LinkEntity {
         }
 
         public LinkEntity(String shortLink, String longLink) {
+                this.shortLink = shortLink;
+                this.longLink = longLink;
         }
 }
