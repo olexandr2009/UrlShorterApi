@@ -5,7 +5,7 @@ import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
 import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.entities.UserEntity;
-import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,20 +14,20 @@ import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class) @MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LinkServiceImplTest {
 
     @Autowired
@@ -35,6 +35,11 @@ public class LinkServiceImplTest {
 
     @MockBean
     private LinkRepository linkRepository;
+
+    @BeforeEach
+    void setup() {
+        openMocks(this);
+    }
 
     @Test
     void testFindAllLinks() {
@@ -59,6 +64,7 @@ public class LinkServiceImplTest {
         // Перевірка findByUserId
         verify(linkRepository, times(1)).findByUserId(userId);
     }
+
     @Test
     public void testRedirect_ExistingShortLink_Success() {
         // Генерація

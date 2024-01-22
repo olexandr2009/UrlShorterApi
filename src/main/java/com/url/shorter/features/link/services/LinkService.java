@@ -18,6 +18,9 @@ public interface LinkService {
     Optional<LinkDto> findByLongLink(String longLink);
     void deleteByLongLink(String longLink);
     List<LinkDto> findActiveLinks();
+    List<LinkDto> findActiveLinks(UserDto userDto);
+    Optional<LinkDto> findByShortLink(String shortLink);
+    void deleteByShortLink(String shortLink);
     List<LinkDto> findAllLinks(UserDto userDto);
     LinkDto redirect(String shortUrl);
 }
