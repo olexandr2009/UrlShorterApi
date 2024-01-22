@@ -18,7 +18,7 @@ public class ShortLinkGenerator {
     public ShortLinkGenerator() {
     }
 
-    public String shortLinkGenerator(String longLink) {
+    public String generate(String longLink) {
 
         String[] protocol = longLink.split("//");
 
