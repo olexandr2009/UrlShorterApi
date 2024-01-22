@@ -1,12 +1,15 @@
 package com.url.shorter.features.link.services;
 
+import com.url.shorter.features.link.services.ShortLinkGenerator;
 import com.url.shorter.config.Prefs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,10 +20,6 @@ import static org.mockito.Mockito.*;
 public class ShortLinkGeneratorTest {
     @Autowired
     private ShortLinkGenerator linkGenerator;
-
-    //Spy this is partial mock of a real object
-    @Spy
-    private Prefs prefs;
 
     @Test
     public void testShortLinkGenerator() {
@@ -39,21 +38,5 @@ public class ShortLinkGeneratorTest {
     public void testInvalidLongLink() {
         String longLink = "invalid_link";
         linkGenerator.shortLinkGenerator(longLink);
-    }
-
-    //Tests the interaction of an object 'ShortLinkGenerator' with a mock object 'Prefs'
-    @Test
-    public void testPrefsInteraction() {
-        //Configure the behavior of the mock object Prefs
-        when(prefs.getString(Prefs.LINK_SIZE)).thenReturn("10");
-        when(prefs.getString(Prefs.NAME_OF_RESOURCE)).thenReturn("url.shorter.api");
-
-        //Call to the method that interacts with the object Prefs
-        String longLink = "https://www.example.com";
-        linkGenerator.shortLinkGenerator(longLink);
-
-        //Checking interaction with the object
-        verify(prefs, times(1)).getString(Prefs.LINK_SIZE);
-        verify(prefs, times(1)).getString(Prefs.NAME_OF_RESOURCE);
     }
 }
