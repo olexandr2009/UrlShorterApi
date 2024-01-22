@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -68,6 +69,17 @@ public class LinkController {
     @DeleteMapping("/delete/{longLink}")
     public ResponseEntity<Void> deleteByLongLink(@PathVariable String longLink) {
         linkService.deleteByLongLink(longLink);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{shortLink}")
+    public ResponseEntity<Optional<LinkDto>> findLinkByShortLink(final @PathVariable String shortLink) {
+        return ResponseEntity.ok(linkService.findByShortLink(shortLink));
+    }
+
+    @DeleteMapping("/delete/{shortLink}")
+    public ResponseEntity<Void> deleteByShortLink(final @PathVariable String shortLink) {
+        linkService.deleteByShortLink(shortLink);
         return ResponseEntity.ok().build();
     }
 }
