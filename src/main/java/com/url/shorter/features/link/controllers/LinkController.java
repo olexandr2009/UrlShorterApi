@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -24,9 +25,8 @@ public class LinkController {
     }
 
     @GetMapping("/{shortLink}")
-    public ResponseEntity<LinkDto> findLinkByShortLink(@PathVariable String shortLink) {
-        String originalLink = String.valueOf(linkService.findByShortLink(shortLink));
-        return (ResponseEntity<LinkDto>) ResponseEntity.ok();
+    public ResponseEntity<Optional<LinkDto>> findLinkByShortLink(@PathVariable String shortLink) {
+        return ResponseEntity.ok(linkService.findByShortLink(shortLink));
     }
 
     @DeleteMapping("/delete/{shortLink}")
