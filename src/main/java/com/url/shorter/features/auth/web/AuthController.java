@@ -60,24 +60,23 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(
             @Parameter(description = "Request with username and password to login", required = true)
-            @Valid @RequestBody LoginRequest loginRequest) {
-        try{
-            Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(), loginRequest.getPassword()));
+            @Valid @RequestBody LoginRequest loginRequest
+    ) {
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtUtils.generateJwtToken(authentication);
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(), loginRequest.getPassword()));
 
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-            return ResponseEntity
-                    .ok(new JwtResponse(jwt, userDetails.getUuid(), userDetails.getUsername(), roles));
-        } catch (Exception exception){
-            return ResponseEntity.badRequest().build();
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        return ResponseEntity
+                .ok(new JwtResponse(jwt, userDetails.getUuid(), userDetails.getUsername(), roles));
     }
+
     @Operation(
             summary = "Register user",
             description = "Register user by username and password",
@@ -92,11 +91,7 @@ public class AuthController {
             @Parameter(description = "Request with username and password to register", required = true)
             @Valid @RequestBody SignupRequest signUpRequest
     ) {
-        try {
-            userService.registerUser(signUpRequest.getUsername(), signUpRequest.getPassword());
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+        userService.registerUser(signUpRequest.getUsername(), signUpRequest.getPassword());
         return ResponseEntity.accepted().build();
     }
 }

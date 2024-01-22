@@ -20,7 +20,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 @Primary
 @Service
@@ -84,6 +86,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Set<RoleEntity> roleEntities = roleRepository.findByNames(roles);
         user.setRoles(roleEntities);
         return userMapper.toUserDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserDto findByUsername(String username) {
+        return userMapper.toUserDto(
+                userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username)));
     }
 
 }

@@ -1,14 +1,11 @@
 package com.url.shorter.features.user.controllers;
 
-import com.url.shorter.config.jwt.JwtUtils;
-import com.url.shorter.config.jwt.UserDetailsImpl;
 import com.url.shorter.features.user.dtos.UpdateUserDto;
 import com.url.shorter.features.user.dtos.UpdateUserRoleDto;
 import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.exceptions.UserAlreadyExistException;
 import com.url.shorter.features.user.exceptions.UserIncorrectPasswordException;
 import com.url.shorter.features.user.exceptions.UserNotFoundException;
-import com.url.shorter.features.user.mapper.UserMapper;
 import com.url.shorter.features.user.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,13 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -41,10 +33,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private UserMapper userMapper;
 
     @Operation(
             summary = "Rename user and reset password to newer one",
@@ -93,8 +81,27 @@ public class UserController {
     @PutMapping("/update/roles")
     public ResponseEntity<UserDto> updateUserRole(
             @Parameter(description = "List to update roles", required = true)
-            @Valid @RequestBody UpdateUserRoleDto updateUserRoleDto)
+            @Valid @RequestBody UpdateUserRoleDto updateUserRoleDto, Principal principal)
             throws UserNotFoundException {
         return ResponseEntity.ok(userService.updateUserRoles(principal.getName(), updateUserRoleDto.getRoles()));
+    }
+    @Operation(
+            summary = "Get user id",
+            description = "get user id for api usage",
+            tags = {"Users"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",
+                    description = "User id",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
+    })
+    @GetMapping("/id")
+    public ResponseEntity<String> getId(Principal principal){
+        UserDto byUsername = userService.findByUsername(principal.getName());
+        return ResponseEntity.ok(byUsername.getId().toString());
     }
 }

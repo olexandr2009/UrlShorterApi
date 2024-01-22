@@ -80,8 +80,8 @@ class UserControllerUnitTest {
 
     private UpdateUserDto newTestUpdateUserDto() {
         UpdateUserDto updateUserDto = new UpdateUserDto();
-        updateUserDto.setNewPassword("newPass");
-        updateUserDto.setOldPassword("oldPass");
+        updateUserDto.setNewPassword("newPassword");
+        updateUserDto.setOldPassword("oldPassword");
         updateUserDto.setOldUsername("oldUsername");
         updateUserDto.setNewUsername("newUsername");
         return updateUserDto;

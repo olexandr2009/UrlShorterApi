@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
             )
         ),
         servers = @Server(
-                url = "http://localhost"
+                url = "http://localhost:9999"
         ),
         security = {
                 @SecurityRequirement(
