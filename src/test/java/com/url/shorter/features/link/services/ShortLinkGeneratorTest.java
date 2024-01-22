@@ -6,14 +6,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShortLinkGeneratorTest {
 
     @Test
-    void generateShouldGenerateDifferentShortLinksForDifferentInput() {
-        ShortLinkGenerator shortLinkGenerator = new ShortLinkGenerator();
-        String longLink1 = "https://example1.com";
-        String longLink2 = "https://example2.com";
+    public void testGenerate() {
+        ShortLinkGenerator linkGenerator = new ShortLinkGenerator();
 
-        String shortLink1 = shortLinkGenerator.generate(longLink1);
-        String shortLink2 = shortLinkGenerator.generate(longLink2);
 
-        assertNotEquals(shortLink1, shortLink2);
+        String generatedLink = linkGenerator.generate("https://www.example.com");
+        assertTrue(generatedLink.startsWith(linkGenerator.resource));
+
+        assertEquals(linkGenerator.linkSize + linkGenerator.resource.length(), generatedLink.length());
+
+        String link1 = linkGenerator.generate("https://www.example.com");
+        String link2 = linkGenerator.generate("https://www.anotherexample.com");
+        assertNotEquals(link1, link2);
     }
 }

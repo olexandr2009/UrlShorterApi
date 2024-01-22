@@ -10,19 +10,16 @@ import java.util.stream.Collectors;
 @Service
 public class ShortLinkGenerator {
     @Autowired
-    private final Prefs prefs = new Prefs();
     private static final String symbolsString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final int linkSize = (int) Double.parseDouble(prefs.getString(Prefs.LINK_SIZE));
-    public final String resource = prefs.getString(Prefs.NAME_OF_RESOURCE);
+    final int linkSize = 8;
+    public final String resource = "https://url.shorter.api/";
 
     public String generate(String longLink) {
-
-        String[] protocol = longLink.split("//");
 
         String newLink = new Random().ints(linkSize, 0, symbolsString.length())
                 .mapToObj(symbolsString::charAt)
                 .map(Object::toString)
                 .collect(Collectors.joining());
-        return protocol[0]+"//"+resource+"/"+newLink;
+        return resource+newLink;
     }
 }
