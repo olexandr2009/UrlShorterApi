@@ -3,9 +3,9 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.config.Prefs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class ShortLinkGeneratorTest {
-    @InjectMocks
+    @Autowired
     private ShortLinkGenerator linkGenerator;
 
     //Spy this is partial mock of a real object
