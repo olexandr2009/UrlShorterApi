@@ -11,18 +11,21 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Component
 public class JwtUtils {
-
-    @Value("${demo.app.jwtSecret}")
+    @Value("${demo.app.jwtSecret:======================SecretWordForJwt===========================}")
     private String jwtSecret;
 
-    @Value("${demo.app.jwtExpirationMs}")
+    @Value("${demo.app.jwtExpirationMs:86400000}")
     private int jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
+        if (authentication == null){
+            throw new NullPointerException("authentication cannot be null");
+        }
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -40,10 +43,10 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    public Integer getUserIdFromJwtToken(String token) {
+    public UUID getUserIdFromJwtToken(String token) {
         String id = Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getId();
-        return Objects.nonNull(id) ? Integer.parseInt(id) : null;
+        return Objects.nonNull(id) ? UUID.fromString(id) : null;
     }
 
     public String getUserNameFromJwtToken(String token) {

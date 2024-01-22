@@ -1,26 +1,23 @@
 package com.url.shorter.features.user.controllers;
 
-import com.url.shorter.config.jwt.JwtUtils;
-import com.url.shorter.config.jwt.UserDetailsImpl;
 import com.url.shorter.features.user.dtos.UpdateUserDto;
 import com.url.shorter.features.user.dtos.UpdateUserRoleDto;
 import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.exceptions.UserAlreadyExistException;
 import com.url.shorter.features.user.exceptions.UserIncorrectPasswordException;
 import com.url.shorter.features.user.exceptions.UserNotFoundException;
-import com.url.shorter.features.user.mapper.UserMapper;
 import com.url.shorter.features.user.services.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 @Slf4j
 @Validated
@@ -30,24 +27,16 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private UserMapper userMapper;
 
     @PutMapping("/update")
     public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UpdateUserDto updateUserDto)
             throws UserNotFoundException, UserAlreadyExistException, UserIncorrectPasswordException {
-        SecurityContext context = SecurityContextHolder.getContext();
-        UserDetailsImpl authentication = (UserDetailsImpl) context.getAuthentication().getPrincipal();
-        return ResponseEntity.ok(userService.updateUser(authentication.getUuid(), updateUserDto));
+        return ResponseEntity.ok(userService.updateUser(updateUserDto));
     }
 
     @PutMapping("/update/roles")
-    public ResponseEntity<UserDto> updateUserRole(@Valid @RequestBody UpdateUserRoleDto updateUserRoleDto)
+    public ResponseEntity<UserDto> updateUserRole(@Valid @RequestBody UpdateUserRoleDto updateUserRoleDto, Principal principal)
             throws UserNotFoundException {
-        SecurityContext context = SecurityContextHolder.getContext();
-        UserDetailsImpl authentication = (UserDetailsImpl) context.getAuthentication().getPrincipal();
-        return ResponseEntity.ok(userService.updateUserRoles(authentication.getUuid(), updateUserRoleDto.getRoles()));
+        return ResponseEntity.ok(userService.updateUserRoles(principal.getName(), updateUserRoleDto.getRoles()));
     }
 }
