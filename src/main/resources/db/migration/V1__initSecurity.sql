@@ -16,3 +16,5 @@ CREATE TABLE IF NOT EXISTS users_roles(
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(role_id) REFERENCES roles(id)
 );
+INSERT INTO roles(name)
+VALUES ('ROLE_USER'), ('ROLE_ADMIN'), ('ROLE_SUPER_ADMIN');
