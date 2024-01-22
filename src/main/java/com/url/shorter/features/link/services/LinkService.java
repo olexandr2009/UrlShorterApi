@@ -1,6 +1,12 @@
 package com.url.shorter.features.link.services;
 
 import com.url.shorter.features.link.dto.LinkDto;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.user.dtos.UserDto;
 
 import java.util.List;
@@ -8,6 +14,9 @@ import java.util.Optional;
 
 
 public interface LinkService {
+    Optional<LinkDto> findByShortLink(String shortLink);
+
+    void deleteByShortLink(String shortLink);
     LinkDto createByLongLink(LinkDto linkDto);
     LinkDto updateByLongLink(LinkDto linkDto);
     List<LinkDto> findAll();
