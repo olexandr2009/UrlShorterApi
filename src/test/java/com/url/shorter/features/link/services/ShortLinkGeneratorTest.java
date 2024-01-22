@@ -1,6 +1,5 @@
 package com.url.shorter.features.link.services;
 
-import com.url.shorter.features.link.services.ShortLinkGenerator;
 import com.url.shorter.config.Prefs;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ShortLinkGeneratorTest {
     @InjectMocks
-    private ShortLinkGenerator shortLinkGenerator;
+    private ShortLinkGenerator linkGenerator;
 
     //Spy this is partial mock of a real object
     @Spy
@@ -26,20 +25,20 @@ public class ShortLinkGeneratorTest {
     @Test
     public void testShortLinkGenerator() {
         String longLink = "https://www.example.com";
-        String shortLink = shortLinkGenerator.shortLinkGenerator(longLink);
+        String shortLink = linkGenerator.shortLinkGenerator(longLink);
 
         //Checking that the link has the correct protocol and resource
         assertTrue(shortLink.startsWith("https://url.shorter.api/"));
 
         //Checking whether the link length matches the set value
-        assertEquals(shortLinkGenerator.linkSize, shortLink.length() - "https://url.shorter.api/".length());
+        assertEquals(linkGenerator.linkSize, shortLink.length() - "https://url.shorter.api/".length());
     }
 
     //Test for an exception when an invalid long link is entered
     @Test
     public void testInvalidLongLink() {
         String longLink = "invalid_link";
-        shortLinkGenerator.shortLinkGenerator(longLink);
+        linkGenerator.shortLinkGenerator(longLink);
     }
 
     //Tests the interaction of an object 'ShortLinkGenerator' with a mock object 'Prefs'
@@ -51,7 +50,7 @@ public class ShortLinkGeneratorTest {
 
         //Call to the method that interacts with the object Prefs
         String longLink = "https://www.example.com";
-        shortLinkGenerator.shortLinkGenerator(longLink);
+        linkGenerator.shortLinkGenerator(longLink);
 
         //Checking interaction with the object
         verify(prefs, times(1)).getString(Prefs.LINK_SIZE);
