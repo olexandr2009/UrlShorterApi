@@ -7,6 +7,10 @@ import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@CacheConfig(cacheNames = {"links"})
 public class LinkServiceImpl implements LinkService {
     @Autowired
     private LinkRepository linkRepository;
@@ -35,6 +40,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Transactional
     @Override
+    @CachePut("#linkDto.id")
     public LinkDto createByLongLink(LinkDto linkDto) {
         if (linkDto == null || linkDto.getOriginUrl() == null) {
             throw new IllegalArgumentException("Invalid input data for creating a link.");
@@ -53,6 +59,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Transactional
     @Override
+    @CachePut("#linkDto.id")
     public LinkDto updateByLongLink(LinkDto linkDto) {
         Optional<LinkEntity> existingLink = linkRepository.findByLongLink(linkDto.getOriginUrl());
         if (existingLink.isEmpty()) {
@@ -69,6 +76,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Cacheable(key = "#longLink")
     public Optional<LinkDto> findByLongLink(String longLink) {
         return linkRepository.findByLongLink(longLink)
                 .map(LinkDto::fromEntity);
@@ -76,6 +84,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Transactional
     @Override
+    @CacheEvict(key = "#longLink")
     public void deleteByLongLink(String longLink) {
         Optional<LinkEntity> linkToDelete = linkRepository.findByLongLink(longLink);
         if (linkToDelete.isEmpty()) {
@@ -90,6 +99,7 @@ public class LinkServiceImpl implements LinkService {
         return null;
     }
 
+    @Cacheable(key = "#shortLink")
     public Optional<LinkDto> findByShortLink(String shortLink) {
         return linkRepository.findByShortLink(shortLink)
                 .map(LinkDto::fromEntity);
@@ -97,6 +107,7 @@ public class LinkServiceImpl implements LinkService {
 
     @Transactional
     @Override
+    @CacheEvict(key = "#shortLink")
     public void deleteByShortLink(String shortLink) {
         // Get link entity from DB. Throw exception if entity is missing
         LinkEntity linkEntity = linkRepository.findByShortLink(shortLink)

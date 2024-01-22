@@ -10,3 +10,9 @@ services:
       POSTGRES_DB: urlshorterdb
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
+    links:
+      - redis
+  redis:
+    image: redis
+    ports:
+      - "5433:5433"
