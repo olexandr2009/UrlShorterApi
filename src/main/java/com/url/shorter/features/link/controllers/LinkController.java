@@ -25,9 +25,8 @@ public class LinkController {
     }
 
     @GetMapping("/{shortLink}")
-    public ResponseEntity<LinkDto> findLinkByShortLink(@PathVariable String shortLink) {
-        String originalLink = String.valueOf(linkService.findByShortLink(shortLink));
-        return (ResponseEntity<LinkDto>) ResponseEntity.ok();
+    public ResponseEntity<Optional<LinkDto>> findLinkByShortLink(@PathVariable String shortLink) {
+        return ResponseEntity.ok(linkService.findByShortLink(shortLink));
     }
 
     @DeleteMapping("/delete/{shortLink}")
