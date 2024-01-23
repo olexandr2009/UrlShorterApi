@@ -9,6 +9,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +36,14 @@ public class LinkServiceImpl implements LinkService {
                 .collect(Collectors.toList());
     }
 
-
+    private boolean isValidURL(String url) {
+        try {
+            new URL(url).toURI();
+            return true;
+        } catch (MalformedURLException | URISyntaxException e) {
+            return false;
+        }
+    }
     @Transactional
     @Override
     public List<LinkDto> findAll() {
@@ -47,7 +57,7 @@ public class LinkServiceImpl implements LinkService {
     @Transactional
     @Override
     public LinkDto createByLongLink(LinkDto linkDto) {
-        if (linkDto == null || linkDto.getOriginUrl() == null) {
+        if (linkDto == null || linkDto.getOriginUrl() == null || !isValidURL(linkDto.getOriginUrl())) {
             throw new IllegalArgumentException("Invalid input data for creating a link.");
         }
 
