@@ -36,6 +36,16 @@ public class LinkServiceImpl implements LinkService {
 
     @Transactional
     @Override
+    public List<LinkDto> findAll() {
+        List<LinkEntity> allLinks = linkRepository.findAll();
+        return allLinks.stream()
+                .map(LinkDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    @Override
     public LinkDto createByLongLink(LinkDto linkDto) {
         if (linkDto == null || linkDto.getOriginUrl() == null) {
             throw new IllegalArgumentException("Invalid input data for creating a link.");

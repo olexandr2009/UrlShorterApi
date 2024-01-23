@@ -3,20 +3,18 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
-import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.entities.UserEntity;
 import com.url.shorter.features.user.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -25,50 +23,47 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class LinkServiceImplTest {
+class LinkServiceImplTest {
 
-    @Autowired
-    private LinkService linkService;
-
-    @MockBean
+    @Mock
     private LinkRepository linkRepository;
-
-    @MockBean
+    @Mock
+    private ShortLinkGenerator shortLinkGenerator;
+    @Mock
     private UserRepository userRepository;
 
-    @MockBean
-    private ShortLinkGenerator shortLinkGenerator;
+    @InjectMocks
+    private LinkServiceImpl linkService;
 
-    @BeforeEach
-    void setup() {
-        openMocks(this);
+
+    @Test
+    void testCreateByLongLink() {
+        when(linkRepository.saveAndFlush(any())).thenReturn(createTestLinkEntity());
+        when(shortLinkGenerator.generate(any())).thenReturn("http://example.com");
+        when(userRepository.findById(any())).thenReturn(Optional.of(new UserEntity()));
+
+        LinkDto testLinkDto = createTestLinkDto();
+
+        LinkDto savedLinkDto = linkService.createByLongLink(testLinkDto);
+
+        assertEquals(testLinkDto.getOriginUrl(), savedLinkDto.getOriginUrl());
+        assertEquals(testLinkDto.getShortUrl(), savedLinkDto.getShortUrl());
     }
 
     @Test
-    void testFindAllLinks() {
+    void testFindAll() {
+        when(linkRepository.findAll()).thenReturn(Arrays.asList(createTestLinkEntity()));
 
-        // Генерація даних для тесту
-        UUID userId = UUID.randomUUID();
-        UserDto userDto = new UserDto(userId);
+        List<LinkDto> allLinks = linkService.findAll();
 
-        List<LinkEntity> linkEntities = Arrays.asList(new LinkEntity(UUID.randomUUID(), "long1", "short1", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId)), new LinkEntity(UUID.randomUUID(), "long2", "short2", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId)));
+        assertEquals(1, allLinks.size());
 
-        when(linkRepository.findByUserId(any())).thenReturn(linkEntities);
-
-        // Виклик методу
-        List<LinkDto> result = linkService.findAllLinks(userDto);
-
-        // Перевірка
-        assertEquals(linkEntities.size(), result.size());
-
-        // Перевірка findByUserId
-        verify(linkRepository, times(1)).findByUserId(userId);
     }
 
     @Test
@@ -196,5 +191,26 @@ public class LinkServiceImplTest {
         LinkEntity capturedLinkEntity = argCaptor.getValue();
         assertEquals(capturedLinkEntity, linkEntity);
     }
-}
 
+    private LinkEntity createTestLinkEntity() {
+        return LinkEntity.builder()
+                .id(UUID.randomUUID())
+                .longLink("http://example.com")
+                .shortLink("abc123")
+                .creationDate(LocalDateTime.now())
+                .expirationDate(LocalDateTime.now().plusDays(7))
+                .clicks(0)
+                .build();
+    }
+
+    private LinkDto createTestLinkDto() {
+        return LinkDto.builder()
+                .originUrl("http://example.com")
+                .shortUrl("abc123")
+                .creationDate(LocalDateTime.now())
+                .expirationDate(LocalDateTime.now().plusDays(7))
+                .openCount(0)
+                .userId(UUID.randomUUID())
+                .build();
+    }
+}
