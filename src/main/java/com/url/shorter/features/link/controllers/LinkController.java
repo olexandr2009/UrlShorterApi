@@ -118,11 +118,7 @@ public class LinkController {
             tags = {"Links"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    content = @Content(
-                            schema = @Schema(implementation = Collection.class)
-                    )
-            ),
+            @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
     })
     @GetMapping("/all/active")

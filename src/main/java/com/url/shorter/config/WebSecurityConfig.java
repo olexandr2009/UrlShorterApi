@@ -58,6 +58,7 @@ public class WebSecurityConfig {
                         auth
                                 .requestMatchers(
                                         "/V1/auth/**",
+                                        "/{shortLink}",
                                         "/v3/api-docs",
                                         "/swagger-ui.html",
                                         "/swagger-ui/**",
