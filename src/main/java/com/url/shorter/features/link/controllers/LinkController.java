@@ -2,7 +2,6 @@ package com.url.shorter.features.link.controllers;
 
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.services.LinkService;
-import com.url.shorter.features.link.services.ShortLinkGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,16 +19,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@Tag(name = "Links",description = "Links api")
+@Tag(name = "Links", description = "Links api")
 @RequestMapping("/V1/links")
 public class LinkController {
 
     private final LinkService linkService;
-    private final ShortLinkGenerator shortLinkGenerator;
 
-    public LinkController(LinkService linkService, ShortLinkGenerator shortLinkGenerator) {
+    public LinkController(LinkService linkService) {
         this.linkService = linkService;
-        this.shortLinkGenerator = shortLinkGenerator;
     }
 
     @Operation(
