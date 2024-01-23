@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -38,6 +40,7 @@ class LinkServiceImplTest {
 
     @InjectMocks
     private LinkServiceImpl linkService;
+
 
     @Test
     void testCreateByLongLink() {
@@ -95,6 +98,98 @@ class LinkServiceImplTest {
 
         // Перевірка, що save не буде без shortLink
         verify(linkRepository, never()).save(any());
+    }
+
+    @Test
+    public void testCreateByLongLink_InvalidInput() {
+        LinkDto invalidLinkDto = new LinkDto();
+
+        assertThrows(IllegalArgumentException.class, () -> linkService.createByLongLink(invalidLinkDto));
+
+        verifyNoInteractions(shortLinkGenerator);
+        verifyNoInteractions(linkRepository);
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void testFindAllActiveLinks() {
+
+        // given
+        UUID userId = UUID.randomUUID();
+        UserDto userDto = new UserDto(userId);
+
+        List<LinkEntity> linkEntities = Arrays.asList(new LinkEntity(UUID.randomUUID(), "long1", "short1", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId)), new LinkEntity(UUID.randomUUID(), "long2", "short2", LocalDateTime.now(), LocalDateTime.now().minusDays(7), 0, new UserEntity(userId)));
+
+
+        // when
+        when(linkRepository.findAll()).thenReturn(linkEntities);
+        List<LinkDto> result = linkService.findActiveLinks();
+
+        // then
+        assertEquals(1, result.size());
+        verify(linkRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testFindUsersActiveLinks() {
+
+        // given
+        UUID userId = UUID.randomUUID();
+        UserDto userDto = new UserDto(userId);
+
+        List<LinkEntity> linkEntities = Arrays.asList(new LinkEntity(UUID.randomUUID(), "long1", "short1", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId)), new LinkEntity(UUID.randomUUID(), "long2", "short2", LocalDateTime.now(), LocalDateTime.now().minusDays(7), 0, new UserEntity(userId)));
+
+
+        // when
+        when(linkRepository.findByUserId(userId)).thenReturn(linkEntities);
+        List<LinkDto> result = linkService.findActiveLinks(userDto);
+
+        // then
+        assertEquals(1, result.size());
+        verify(linkRepository, times(1)).findByUserId(userId);
+    }
+
+    @Test
+    void testFindByShortLink() {
+
+        // given
+        String shortLink = "shortLink";
+        UUID userId = UUID.randomUUID();
+        UserDto userDto = new UserDto(userId);
+
+        LinkEntity linkEntity = new LinkEntity(UUID.randomUUID(), "longLink", "shortLink", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId));
+        Optional<LinkEntity> optionalLinkEntity = Optional.of(linkEntity);
+
+        // when
+        when(linkRepository.findByShortLink(shortLink)).thenReturn(optionalLinkEntity);
+        Optional<LinkDto> result = linkService.findByShortLink(shortLink);
+
+        // then
+        assertTrue(result.isPresent());
+        assertEquals(linkEntity.getShortLink(), result.get().getShortUrl());
+        verify(linkRepository, times(1)).findByShortLink(shortLink);
+    }
+
+    @Test
+    void testDeleteByShortLink() {
+
+        // given
+        String shortLink = "shortLink";
+        UUID userId = UUID.randomUUID();
+        UserDto userDto = new UserDto(userId);
+
+        LinkEntity linkEntity = new LinkEntity(UUID.randomUUID(), "longLink", "shortLink", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId));
+        Optional<LinkEntity> optionalLinkEntity = Optional.of(linkEntity);
+
+        // when
+        when(linkRepository.findByShortLink(shortLink)).thenReturn(optionalLinkEntity);
+        linkService.deleteByShortLink(shortLink);
+
+        // then
+        ArgumentCaptor<LinkEntity> argCaptor = ArgumentCaptor.forClass(LinkEntity.class);
+        verify(linkRepository).delete(argCaptor.capture());
+        LinkEntity capturedLinkEntity = argCaptor.getValue();
+        assertEquals(capturedLinkEntity, linkEntity);
     }
 
     private LinkEntity createTestLinkEntity() {
