@@ -88,4 +88,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userMapper.toUserDto(userRepository.save(user));
     }
 
+    @Override
+    public UserDto findByUsername(String username) {
+        return userMapper.toUserDto(
+                userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username)));
+    }
+
 }

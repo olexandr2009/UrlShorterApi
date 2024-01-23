@@ -49,8 +49,8 @@ public class LinkServiceImplTest {
         UserDto userDto = new UserDto(userId);
 
         List<LinkEntity> linkEntities = Arrays.asList(
-                new LinkEntity(UUID.randomUUID(), "long1", "short1", new UserEntity(userId), LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0),
-                new LinkEntity(UUID.randomUUID(), "long2", "short2", new UserEntity(userId), LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0)
+                new LinkEntity(UUID.randomUUID(), "long1", "short1", LocalDateTime.now(), LocalDateTime.now().plusDays(7),0, new UserEntity(userId)),
+                new LinkEntity(UUID.randomUUID(), "long2", "short2", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId))
         );
 
         when(linkRepository.findByUserId(any())).thenReturn(linkEntities);

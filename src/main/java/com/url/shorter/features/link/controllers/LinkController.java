@@ -39,7 +39,7 @@ public class LinkController {
     public ResponseEntity<LinkDto> saveLongLink(
             @RequestParam String longLink,
             @RequestParam(required = false) LocalDateTime dateExp,
-            @RequestParam(required = false) String user
+            @RequestParam(required = false) String userId
     ) {
         try {
             LinkDto linkDto = LinkDto.builder()
@@ -48,7 +48,7 @@ public class LinkController {
                     .creationDate(LocalDateTime.now())
                     .expirationDate(dateExp)
                     .openCount(0)
-                    .userId(UUID.fromString(user))
+                    .userId(UUID.fromString(userId))
                     .build();
 
             LinkDto savedLink = linkService.createByLongLink(linkDto);
