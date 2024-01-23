@@ -18,4 +18,5 @@ public interface LinkRepository extends JpaRepository<LinkEntity, UUID> {
     Optional<LinkEntity> findByShortLink(String  ShortLink);
     void deleteByLongLink(String longLink);
     List<LinkEntity> findByUserId(UUID userId);
+    boolean existsByShortLink(String shortLink);
 }

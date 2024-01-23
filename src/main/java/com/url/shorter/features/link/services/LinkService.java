@@ -10,7 +10,6 @@ import java.util.Optional;
 @Service
 public interface LinkService {
     Optional<LinkDto> findByShortLink(String shortLink);
-
     void deleteByShortLink(String shortLink);
     LinkDto createByLongLink(LinkDto linkDto);
     LinkDto updateByLongLink(LinkDto linkDto);
@@ -19,8 +18,7 @@ public interface LinkService {
     void deleteByLongLink(String longLink);
     List<LinkDto> findActiveLinks();
     List<LinkDto> findActiveLinks(UserDto userDto);
-    Optional<LinkDto> findByShortLink(String shortLink);
-    void deleteByShortLink(String shortLink);
     List<LinkDto> findAllLinks(UserDto userDto);
     LinkDto redirect(String shortUrl);
+    boolean existsByShortLink(String shortLink);
 }

@@ -143,4 +143,9 @@ public class LinkServiceImpl implements LinkService {
 
         return LinkDto.fromEntity(linkEntity);
     }
+
+    @Override
+    public boolean existsByShortLink(String shortLink) {
+        return linkRepository.existsByShortLink(shortLink);
+    }
 }
