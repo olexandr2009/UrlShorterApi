@@ -23,7 +23,7 @@ public class LinkDto {
     String originUrl;
     LocalDateTime creationDate;
     LocalDateTime expirationDate;
-    Integer openCount;
+    int openCount;
     UUID userId;
 
     public LinkEntity toEntity() {
@@ -48,5 +48,8 @@ public class LinkDto {
                 .expirationDate(linkEntity.getExpirationDate())
                 .userId(linkEntity.getUser() != null ? linkEntity.getUser().getId() : null)
                 .build();
+    }
+    public String getLongLink() {
+        return originUrl;
     }
 }

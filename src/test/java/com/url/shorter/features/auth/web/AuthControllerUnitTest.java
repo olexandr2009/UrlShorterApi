@@ -14,13 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -52,16 +50,18 @@ public class AuthControllerUnitTest {
 
         LoginRequest loginRequest = createTestLoginRequest();
 
-        assertEquals(testToken, authController.authenticateUser(loginRequest).getBody().getToken());
+        Object body = authController.authenticateUser(loginRequest).getBody();
+        assertEquals(testToken, ((JwtResponse) body).getToken());
     }
 
     @Test
     void testAuthenticateUserThrowsException() {
+        BadCredentialsException ex = new BadCredentialsException("bad credentials");
         when(authenticationManager.authenticate(any()))
-                .thenThrow(new BadCredentialsException("bad credentials"));
+                .thenThrow(ex);
         LoginRequest loginRequest = createTestLoginRequest();
-
-        assertThrows(AuthenticationException.class, () -> authController.authenticateUser(loginRequest));
+        ResponseEntity<?> responseEntity = authController.authenticateUser(loginRequest);
+        assertEquals(ex.getMessage(),responseEntity.getBody());
     }
 
     @Test

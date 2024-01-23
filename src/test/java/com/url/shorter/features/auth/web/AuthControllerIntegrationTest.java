@@ -9,12 +9,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Testcontainers
 @SpringBootTest
@@ -35,9 +34,8 @@ class AuthControllerIntegrationTest {
 
     @Test
     void testAuthenticateUserThrowsEx() {
-        assertThrows(AuthenticationException.class,
-                () -> authController.authenticateUser(
-                        createTestLoginRequest(testUserName, testPassword)));
+        assertEquals(MediaType.TEXT_PLAIN, authController.authenticateUser(
+                        createTestLoginRequest(testUserName, testPassword)).getHeaders().getContentType());
     }
     @Test
     void testRegisterUser() {
@@ -48,8 +46,8 @@ class AuthControllerIntegrationTest {
     @Test
     void testRegisterUserThrowsEx() {
         userRepository.save(new UserEntity(testUserName, testPassword));
-        assertThrows(UserAlreadyExistException.class, () -> authController.registerUser(
-                createTestSignUpRequest(testUserName, testPassword)));
+        assertEquals(new UserAlreadyExistException(testUserName).getMessage(), authController.registerUser(
+                createTestSignUpRequest(testUserName, testPassword)).getBody());
 
     }
 

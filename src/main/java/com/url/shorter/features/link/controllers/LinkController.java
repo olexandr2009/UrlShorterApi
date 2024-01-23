@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -23,11 +24,22 @@ public class LinkController {
         this.shortLinkGenerator = shortLinkGenerator;
     }
 
+    @GetMapping("/{shortLink}")
+    public ResponseEntity<Optional<LinkDto>> findLinkByShortLink(@PathVariable String shortLink) {
+        return ResponseEntity.ok(linkService.findByShortLink(shortLink));
+    }
+
+    @DeleteMapping("/delete/{shortLink}")
+    public ResponseEntity<Void> deleteByShortLink(@PathVariable String shortLink) {
+        linkService.deleteByShortLink(shortLink);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/saveLongLink")
     public ResponseEntity<LinkDto> saveLongLink(
             @RequestParam String longLink,
             @RequestParam(required = false) LocalDateTime dateExp,
-            @RequestParam(required = false) String user
+            @RequestParam(required = false) String userId
     ) {
         try {
             LinkDto linkDto = LinkDto.builder()
@@ -36,7 +48,7 @@ public class LinkController {
                     .creationDate(LocalDateTime.now())
                     .expirationDate(dateExp)
                     .openCount(0)
-                    .userId(UUID.fromString(user))
+                    .userId(UUID.fromString(userId))
                     .build();
 
             LinkDto savedLink = linkService.createByLongLink(linkDto);
@@ -57,5 +69,17 @@ public class LinkController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<LinkDto>> findActiveLinks() {
+        List<LinkDto> activeLinks = linkService.findActiveLinks();
+        return ResponseEntity.ok(activeLinks);
+    }
+
+    @DeleteMapping("/delete/{longLink}")
+    public ResponseEntity<Void> deleteByLongLink(@PathVariable String longLink) {
+        linkService.deleteByLongLink(longLink);
+        return ResponseEntity.ok().build();
     }
 }

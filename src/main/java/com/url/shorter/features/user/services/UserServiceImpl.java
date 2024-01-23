@@ -20,7 +20,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 @Primary
 @Service
@@ -52,7 +54,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userRepository.existsByUsername(username)) {
             throw new UserAlreadyExistException(username);
         }
-
         UserEntity user = new UserEntity(username, encoder.encode(password));
         Set<RoleEntity> roleEntities = roleRepository.findByNames(Collections.singleton(RoleEntity.UserRole.ROLE_USER));
         user.setRoles(roleEntities);
@@ -61,15 +62,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional
-    public UserDto updateUser(UUID userId, UpdateUserDto updateUserDto)
+    public UserDto updateUser(UpdateUserDto updateUserDto)
             throws UserNotFoundException, UserIncorrectPasswordException, UserAlreadyExistException {
         UserEntity user = userRepository.findByUsername(updateUserDto.getOldUsername())
                 .orElseThrow(() -> new UserNotFoundException(updateUserDto.getOldUsername()));
         if (userRepository.existsByUsername(updateUserDto.getNewUsername())) {
-            throw new UserAlreadyExistException(updateUserDto.getOldUsername());
+            throw new UserAlreadyExistException(updateUserDto.getNewUsername());
         }
-        if (user.getPassword().equals(encoder.encode(updateUserDto.getOldPassword())) &&
-                Objects.nonNull(userId) && userId.equals(user.getId())) {
+        if (encoder.matches(updateUserDto.getOldPassword(), user.getPassword())) {
             user.setUsername(updateUserDto.getNewUsername());
             user.setPassword(encoder.encode(updateUserDto.getNewPassword()));
             return userMapper.toUserDto(userRepository.save(user));
@@ -80,12 +80,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional
-    public UserDto updateUserRoles(UUID userId, Collection<RoleEntity.UserRole> roles) throws UserNotFoundException {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+    public UserDto updateUserRoles(String username, Collection<RoleEntity.UserRole> roles) throws UserNotFoundException {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
         Set<RoleEntity> roleEntities = roleRepository.findByNames(roles);
         user.setRoles(roleEntities);
         return userMapper.toUserDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserDto findByUsername(String username) {
+        return userMapper.toUserDto(
+                userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username)));
     }
 
 }

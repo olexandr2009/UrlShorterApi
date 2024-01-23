@@ -1,14 +1,11 @@
 package com.url.shorter.features.link.entities;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.*;
-
 
 import com.url.shorter.features.user.entities.UserEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -44,4 +41,18 @@ public class LinkEntity {
         @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
         private UserEntity user;
 
+        public LinkEntity(UUID id, String longLink, String shortLink, UserEntity user, LocalDateTime creationDate, LocalDateTime expirationDate, int clicks) {
+                this.id = id;
+                this.longLink = longLink;
+                this.shortLink = shortLink;
+                this.user = user;
+                this.creationDate = creationDate;
+                this.expirationDate = expirationDate;
+                this.clicks = clicks;
+        }
+
+        public LinkEntity(String shortLink, String longLink) {
+                this.shortLink = shortLink;
+                this.longLink = longLink;
+        }
 }
