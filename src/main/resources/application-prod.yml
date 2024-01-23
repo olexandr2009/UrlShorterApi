@@ -1,12 +1,5 @@
 spring:
-#Cache configuration
-  cache:
-    type: redis
-    host: localhost
-    port: 5433
-    redis:
-      time-to-live: 60000
-# Prod profile configuration
+  # Prod profile configuration
 # PostgreSQL Configuration
   datasource:
     driver-class-name: org.postgresql.Driver

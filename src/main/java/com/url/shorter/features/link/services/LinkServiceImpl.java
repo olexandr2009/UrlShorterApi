@@ -123,4 +123,10 @@ public class LinkServiceImpl implements LinkService {
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public void incrementUseCount(LinkDto linkDto) {
+        linkRepository.updateUsedCount(linkDto.getId());
+    }
 }

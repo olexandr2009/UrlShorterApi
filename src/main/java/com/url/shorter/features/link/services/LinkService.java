@@ -17,4 +17,5 @@ public interface LinkService {
     Optional<LinkDto> findByShortLink(String shortLink);
     void deleteByShortLink(String shortLink);
     List<LinkDto> findAllLinks(UserDto userDto);
+    void incrementUseCount(LinkDto linkDto);
 }
