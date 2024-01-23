@@ -5,9 +5,11 @@ import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
 import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.entities.UserEntity;
+import com.url.shorter.features.user.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -36,6 +38,12 @@ public class LinkServiceImplTest {
 
     @MockBean
     private LinkRepository linkRepository;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private ShortLinkGenerator shortLinkGenerator;
 
     @BeforeEach
     void setup() {
@@ -97,6 +105,16 @@ public class LinkServiceImplTest {
         verify(linkRepository, never()).save(any());
     }
 
+    @Test
+    public void testCreateByLongLink_InvalidInput() {
+        LinkDto invalidLinkDto = new LinkDto();
+
+        assertThrows(IllegalArgumentException.class, () -> linkService.createByLongLink(invalidLinkDto));
+
+        verifyNoInteractions(shortLinkGenerator);
+        verifyNoInteractions(linkRepository);
+        verifyNoInteractions(userRepository);
+    }
 
     @Test
     void testFindAllActiveLinks() {
@@ -178,6 +196,5 @@ public class LinkServiceImplTest {
         LinkEntity capturedLinkEntity = argCaptor.getValue();
         assertEquals(capturedLinkEntity, linkEntity);
     }
-
 }
 
