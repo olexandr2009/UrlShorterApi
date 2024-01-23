@@ -53,11 +53,15 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
     })
     @PutMapping("/update")
-    public ResponseEntity<UserDto> updateUser(
+    public ResponseEntity<?> updateUser(
             @Parameter(description = "Object to update username and password", required = true)
             @Valid @RequestBody UpdateUserDto updateUserDto)
             throws UserNotFoundException, UserAlreadyExistException, UserIncorrectPasswordException {
-        return ResponseEntity.ok(userService.updateUser(updateUserDto));
+        try {
+            return ResponseEntity.ok(userService.updateUser(updateUserDto));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
+        }
     }
 
     @Operation(
@@ -79,11 +83,15 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
     })
     @PutMapping("/update/roles")
-    public ResponseEntity<UserDto> updateUserRole(
+    public ResponseEntity<?> updateUserRole(
             @Parameter(description = "List to update roles", required = true)
             @Valid @RequestBody UpdateUserRoleDto updateUserRoleDto, Principal principal)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.updateUserRoles(principal.getName(), updateUserRoleDto.getRoles()));
+        try {
+            return ResponseEntity.ok(userService.updateUserRoles(principal.getName(), updateUserRoleDto.getRoles()));
+        }catch (UserNotFoundException e){
+            return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
+        }
     }
     @Operation(
             summary = "Get user id",
@@ -101,7 +109,7 @@ public class UserController {
     })
     @GetMapping("/id")
     public ResponseEntity<String> getId(Principal principal){
-        UserDto byUsername = userService.findByUsername(principal.getName());
-        return ResponseEntity.ok(byUsername.getId().toString());
+        UserDto user = userService.findByUsername(principal.getName());
+        return ResponseEntity.ok(user.getId().toString());
     }
 }

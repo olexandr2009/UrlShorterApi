@@ -2,6 +2,7 @@ package com.url.shorter.features.auth.web;
 
 import com.url.shorter.config.jwt.JwtUtils;
 import com.url.shorter.config.jwt.UserDetailsImpl;
+import com.url.shorter.features.user.exceptions.UserAlreadyExistException;
 import com.url.shorter.features.user.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -58,23 +59,26 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Cannot login")
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> authenticateUser(
+    public ResponseEntity<?> authenticateUser(
             @Parameter(description = "Request with username and password to login", required = true)
             @Valid @RequestBody LoginRequest loginRequest
     ) {
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(), loginRequest.getPassword()));
 
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        return ResponseEntity
-                .ok(new JwtResponse(jwt, userDetails.getUuid(), userDetails.getUsername(), roles));
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+            return ResponseEntity
+                    .ok(new JwtResponse(jwt, userDetails.getUuid(), userDetails.getUsername(), roles));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
+        }
     }
 
     @Operation(
@@ -91,7 +95,11 @@ public class AuthController {
             @Parameter(description = "Request with username and password to register", required = true)
             @Valid @RequestBody SignupRequest signUpRequest
     ) {
-        userService.registerUser(signUpRequest.getUsername(), signUpRequest.getPassword());
+        try{
+            userService.registerUser(signUpRequest.getUsername(), signUpRequest.getPassword());
+        } catch (UserAlreadyExistException e){
+            return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
+        }
         return ResponseEntity.accepted().build();
     }
 }
