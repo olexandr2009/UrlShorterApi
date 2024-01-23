@@ -66,39 +66,6 @@ class LinkServiceImplTest {
 
     }
 
-    @Test
-    public void testRedirect_ExistingShortLink_Success() {
-        // Генерація
-        String shortLink = "abc123";
-        String longLink = "https://www.example.com";
-        LinkEntity linkEntity = new LinkEntity(shortLink, longLink);
-        linkEntity.setClicks(0);
-
-        when(linkRepository.findByShortLink(shortLink)).thenReturn(Optional.of(linkEntity));
-
-        // Виклик
-        LinkDto linkDto = linkService.redirect(shortLink);
-
-        // Перевірка
-        assertNotNull(linkDto);
-        assertEquals(longLink, linkDto.getLongLink());
-
-        // Перевірка save
-        verify(linkRepository, times(1)).save(linkEntity);
-    }
-
-    @Test
-    public void testRedirect_NonExistingShortLink_ExceptionThrown() {
-        // Генерація
-        String nonExistingShortUrl = "nonexistent";
-        when(linkRepository.findByShortLink(nonExistingShortUrl)).thenReturn(Optional.empty());
-
-        // Перевірка
-        assertThrows(IllegalArgumentException.class, () -> linkService.redirect(nonExistingShortUrl));
-
-        // Перевірка, що save не буде без shortLink
-        verify(linkRepository, never()).save(any());
-    }
 
     @Test
     public void testCreateByLongLink_InvalidInput() {

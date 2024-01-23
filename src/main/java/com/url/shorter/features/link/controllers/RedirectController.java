@@ -16,6 +16,7 @@ import java.io.IOException;
 
 @RestController
 @Tag(name = "Redirect", description = "Redirector to long Url")
+
 public class RedirectController {
     private final LinkService linkService;
 
@@ -35,11 +36,12 @@ public class RedirectController {
     public void redirectToLongLink(
             @Parameter(required = true, description = "short url")
             @PathVariable String shortLink, HttpServletResponse response) throws IOException {
-        LinkDto linkDto = linkService.redirect(shortLink);
-        if (linkDto != null) {
-            response.sendRedirect(linkDto.getLongLink());
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Short link not found");
+        try {
+            LinkDto linkDto = linkService.findByShortLink(shortLink).orElseThrow();
+            linkService.incrementUseCount(linkDto);
+            response.sendRedirect(linkDto.getOriginUrl());
+        } catch (Exception e){
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 }
