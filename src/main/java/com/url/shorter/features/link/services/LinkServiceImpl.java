@@ -44,15 +44,6 @@ public class LinkServiceImpl implements LinkService {
             return false;
         }
     }
-    @Transactional
-    @Override
-    public List<LinkDto> findAll() {
-        List<LinkEntity> allLinks = linkRepository.findAll();
-        return allLinks.stream()
-                .map(LinkDto::fromEntity)
-                .collect(Collectors.toList());
-    }
-
 
     @Transactional
     @Override
