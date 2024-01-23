@@ -5,6 +5,7 @@ import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
 import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.entities.UserEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,20 +18,28 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class) @MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LinkServiceImplTest {
 
     @Autowired
-    private LinkServiceImpl linkService;
+    private LinkService linkService;
 
     @MockBean
     private LinkRepository linkRepository;
+
+    @BeforeEach
+    void setup() {
+        openMocks(this);
+    }
 
     @Test
     void testFindAllLinks() {
@@ -54,6 +63,40 @@ public class LinkServiceImplTest {
 
         // Перевірка findByUserId
         verify(linkRepository, times(1)).findByUserId(userId);
+    }
+
+    @Test
+    public void testRedirect_ExistingShortLink_Success() {
+        // Генерація
+        String shortLink = "abc123";
+        String longLink = "https://www.example.com";
+        LinkEntity linkEntity = new LinkEntity(shortLink, longLink);
+        linkEntity.setClicks(0);
+
+        when(linkRepository.findByShortLink(shortLink)).thenReturn(Optional.of(linkEntity));
+
+        // Виклик
+        LinkDto linkDto = linkService.redirect(shortLink);
+
+        // Перевірка
+        assertNotNull(linkDto);
+        assertEquals(longLink, linkDto.getLongLink());
+
+        // Перевірка save
+        verify(linkRepository, times(1)).save(linkEntity);
+    }
+
+    @Test
+    public void testRedirect_NonExistingShortLink_ExceptionThrown() {
+        // Генерація
+        String nonExistingShortUrl = "nonexistent";
+        when(linkRepository.findByShortLink(nonExistingShortUrl)).thenReturn(Optional.empty());
+
+        // Перевірка
+        assertThrows(IllegalArgumentException.class, () -> linkService.redirect(nonExistingShortUrl));
+
+        // Перевірка, що save не буде без shortLink
+        verify(linkRepository, never()).save(any());
     }
 }
 
