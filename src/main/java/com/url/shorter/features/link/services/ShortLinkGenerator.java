@@ -15,14 +15,11 @@ public class ShortLinkGenerator {
     public final int linkSize = (int) Double.parseDouble(prefs.getString(Prefs.LINK_SIZE));
     public final String resource = prefs.getString(Prefs.NAME_OF_RESOURCE);
 
-    public String generate(String longLink) {
-
-        String[] protocol = longLink.split("//");
-
+    public String generate() {
         String newLink = new Random().ints(linkSize, 0, symbolsString.length())
                 .mapToObj(symbolsString::charAt)
                 .map(Object::toString)
                 .collect(Collectors.joining());
-        return protocol[0]+"//"+resource+"/"+newLink;
+        return "http://"+resource+"/"+newLink;
     }
 }

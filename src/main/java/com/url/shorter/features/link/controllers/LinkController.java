@@ -71,8 +71,8 @@ public class LinkController {
     @PostMapping("/save")
     public ResponseEntity<LinkDto> saveLongLink(
             @RequestParam String longLink,
-            @RequestParam(required = false) LocalDateTime dateExp,
-            @RequestParam(required = false) String userId
+            @RequestParam String userId,
+            @RequestParam(required = false) LocalDateTime dateExp
     ) {
         try {
             LinkDto linkDto = LinkDto.builder()

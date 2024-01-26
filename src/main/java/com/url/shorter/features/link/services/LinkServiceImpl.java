@@ -58,7 +58,7 @@ public class LinkServiceImpl implements LinkService {
             throw new IllegalArgumentException("Invalid input data for creating a link.");
         }
 
-        String shortLink = shortLinkGenerator.generate(linkDto.getOriginUrl());
+        String shortLink = shortLinkGenerator.generate();
 
         LinkEntity entity = linkDto.toEntity();
 

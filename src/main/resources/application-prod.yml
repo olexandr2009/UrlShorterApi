@@ -3,9 +3,9 @@ spring:
 # PostgreSQL Configuration
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/urlshorterdb
-    username: ${DB_USERNAME:test}
-    password: ${DB_PASSWORD:test}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://db:5432/urlshorterdb}
+    username: ${SPRING_DATASOURCE_USERNAME:test}
+    password: ${SPRING_DATASOURCE_PASSWORD:test}
 
   # JPA and Hibernate setup for PostgreSQL
   jpa:
@@ -15,9 +15,9 @@ spring:
 
   # Flyway Configuration
   flyway:
-    url: jdbc:postgresql://localhost:5432/urlshorterdb
-    user: ${DB_USERNAME:test}
-    password: ${DB_PASSWORD:test}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/urlshorterdb}
+    user: ${SPRING_DATASOURCE_USERNAME:test}
+    password: ${SPRING_DATASOURCE_PASSWORD:test}
 
 # Swagger Configuration
 springdoc:
