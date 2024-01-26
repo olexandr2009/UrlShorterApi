@@ -23,6 +23,12 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
 
+      - name: Create jar
+        run: ./gradlew jar
+
+      - name: Create Docker Image
+        run: docker build -t dockerurlshorterapi .
+
       - name: Start Docker Compose services
         run: docker compose -f docker-compose.yml up -d
 
