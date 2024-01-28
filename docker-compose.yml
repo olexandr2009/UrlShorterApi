@@ -3,6 +3,9 @@ version: '3.8'
 services:
   app:
     image: dockerurlshorterapi
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - 9999:9999
     environment:
