@@ -1,4 +1,4 @@
 # Profile configuration
 spring:
   profiles:
-    active: local
+    active: prod
