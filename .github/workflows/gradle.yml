@@ -34,9 +34,6 @@ jobs:
       - name: Build jar
         run: ./gradlew build
 
-      - name: Create Docker Image
-        run: docker build -t dockerurlshorterapi .
-
       - name: Start Docker Compose services
         run: docker compose -f docker-compose.yml up -d
 
