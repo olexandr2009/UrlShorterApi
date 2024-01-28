@@ -20,10 +20,10 @@ public interface LinkRepository extends JpaRepository<LinkEntity, UUID> {
     Optional<LinkEntity> findByLongLink(String longLink);
     Optional<LinkEntity> findByShortLink(String ShortLink);
     void deleteByLongLink(String longLink);
-    List<LinkEntity> findByUserId(UUID userId);
+    List<LinkEntity> findByUserUsername(String username);
     boolean existsByShortLink(String shortLink);
 
     @Modifying
-    @Query(value = "update LinkEntity le set le.clicks = le.clicks + 1 where le.id = :id")
-    void updateUsedCount(@Param(value = "id") UUID id);
+    @Query(value = "update LinkEntity le set le.clicks = le.clicks + 1 where le.shortLink = :shortLink")
+    void incrementOpenCount(@Param(value = "shortLink") String shortLink);
 }

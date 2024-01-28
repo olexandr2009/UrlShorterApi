@@ -38,8 +38,8 @@ public class RedirectController {
             @PathVariable String shortLink, HttpServletResponse response) throws IOException {
         try {
             LinkDto linkDto = linkService.findByShortLink(shortLink).orElseThrow();
-            linkService.incrementUseCount(linkDto);
-            response.sendRedirect(linkDto.getOriginUrl());
+            linkService.incrementUseCount(linkDto.getShortLink());
+            response.sendRedirect(linkDto.getLongLink());
         } catch (Exception e){
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

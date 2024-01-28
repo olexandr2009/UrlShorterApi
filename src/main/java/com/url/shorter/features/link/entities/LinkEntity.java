@@ -38,21 +38,6 @@ public class LinkEntity {
         private int clicks;
 
         @ManyToOne
-        @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
+        @JoinColumn(name = "owner_name", referencedColumnName = "username")
         private UserEntity user;
-
-        public LinkEntity(UUID id, String longLink, String shortLink, UserEntity user, LocalDateTime creationDate, LocalDateTime expirationDate, int clicks) {
-                this.id = id;
-                this.longLink = longLink;
-                this.shortLink = shortLink;
-                this.user = user;
-                this.creationDate = creationDate;
-                this.expirationDate = expirationDate;
-                this.clicks = clicks;
-        }
-
-        public LinkEntity(String shortLink, String longLink) {
-                this.shortLink = shortLink;
-                this.longLink = longLink;
-        }
 }

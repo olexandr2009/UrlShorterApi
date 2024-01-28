@@ -93,23 +93,4 @@ public class UserController {
             return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
         }
     }
-    @Operation(
-            summary = "Get user id",
-            description = "get user id for api usage",
-            tags = {"Users"}
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    description = "User id",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE
-                    )
-            ),
-            @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
-    })
-    @GetMapping("/id")
-    public ResponseEntity<String> getId(Principal principal){
-        UserDto user = userService.findByUsername(principal.getName());
-        return ResponseEntity.ok(user.getId().toString());
-    }
 }

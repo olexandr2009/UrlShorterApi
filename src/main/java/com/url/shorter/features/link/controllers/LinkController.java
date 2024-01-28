@@ -12,11 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @Tag(name = "Links", description = "Links api")
@@ -71,17 +71,17 @@ public class LinkController {
     @PostMapping("/save")
     public ResponseEntity<LinkDto> saveLongLink(
             @RequestParam String longLink,
-            @RequestParam String userId,
-            @RequestParam(required = false) LocalDateTime dateExp
+            @RequestParam(required = false) LocalDateTime dateExp,
+            Principal principal
     ) {
         try {
             LinkDto linkDto = LinkDto.builder()
-                    .originUrl(longLink)
-                    .shortUrl(null)
+                    .longLink(longLink)
+                    .shortLink(null)
                     .creationDate(LocalDateTime.now())
                     .expirationDate(dateExp)
                     .openCount(0)
-                    .userId(UUID.fromString(userId))
+                    .username(principal.getName())
                     .build();
 
             LinkDto savedLink = linkService.createByLongLink(linkDto);

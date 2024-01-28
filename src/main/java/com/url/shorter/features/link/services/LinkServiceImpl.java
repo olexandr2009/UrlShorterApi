@@ -3,7 +3,6 @@ package com.url.shorter.features.link.services;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
-import com.url.shorter.features.user.dtos.UserDto;
 import com.url.shorter.features.user.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,16 +52,22 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @CachePut("#linkDto.id")
     public LinkDto createByLongLink(LinkDto linkDto) {
-        if (linkDto == null || linkDto.getOriginUrl() == null || !isValidURL(linkDto.getOriginUrl())) {
+        if (linkDto == null || linkDto.getLongLink() == null || !isValidURL(linkDto.getLongLink())) {
             throw new IllegalArgumentException("Invalid input data for creating a link.");
         }
 
         String shortLink = shortLinkGenerator.generate();
 
-        LinkEntity entity = linkDto.toEntity();
+        LinkEntity entity = LinkEntity.builder()
+                .longLink(linkDto.getLongLink())
+                .shortLink(linkDto.getShortLink())
+                .creationDate(linkDto.getCreationDate())
+                .clicks(linkDto.getOpenCount())
+                .user(userRepository.findByUsername(linkDto.getUsername()).orElseThrow())
+                .build();
 
         entity.setShortLink(shortLink);
-        entity.setUser(userRepository.findById(linkDto.getUserId()).orElseThrow());
+        entity.setUser(userRepository.findByUsername(linkDto.getUsername()).orElseThrow());
         entity = linkRepository.saveAndFlush(entity);
 
         return LinkDto.fromEntity(entity);
@@ -73,13 +77,13 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @CachePut("#linkDto.id")
     public LinkDto updateByLongLink(LinkDto linkDto) {
-        Optional<LinkEntity> existingLink = linkRepository.findByLongLink(linkDto.getOriginUrl());
+        Optional<LinkEntity> existingLink = linkRepository.findByLongLink(linkDto.getLongLink());
         if (existingLink.isEmpty()) {
             throw new IllegalArgumentException("Link with the provided long link does not exist.");
         }
 
         LinkEntity existingEntity = existingLink.get();
-        existingEntity.setShortLink(linkDto.getShortUrl());
+        existingEntity.setShortLink(linkDto.getShortLink());
         existingEntity.setExpirationDate(linkDto.getExpirationDate());
         existingEntity.setClicks(linkDto.getOpenCount());
 
@@ -116,9 +120,8 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public List<LinkDto> findActiveLinks(UserDto userDto) {
-
-        return findAllLinks(userDto)
+    public List<LinkDto> findActiveLinks(String username) {
+        return findAllLinks(username)
                 .stream()
                 .filter(link -> link.getExpirationDate().isAfter(LocalDateTime.now()))
                 .toList();
@@ -143,9 +146,8 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public List<LinkDto> findAllLinks(UserDto userDto) {
-        UUID userId = userDto.getId();
-        List<LinkEntity> linkEntities = linkRepository.findByUserId(userId);
+    public List<LinkDto> findAllLinks(String username) {
+        List<LinkEntity> linkEntities = linkRepository.findByUserUsername(username);
         return linkEntities.stream()
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
@@ -153,7 +155,8 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional
-    public void incrementUseCount(LinkDto linkDto) {
-        linkRepository.updateUsedCount(linkDto.getId());
+    @CachePut(key = "#shortLink")
+    public void incrementUseCount(String shortLink){
+        linkRepository.incrementOpenCount(shortLink);
     }
 }
