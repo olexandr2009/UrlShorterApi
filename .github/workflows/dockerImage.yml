@@ -1,0 +1,38 @@
+name: Create Docker Image
+
+on:
+  pull_request:
+    branches:
+      - master
+
+env:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/urlshorterdb
+  SPRING_DATASOURCE_USERNAME: test
+  SPRING_DATASOURCE_PASSWORD: test
+
+jobs:
+  createDockerImage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Grant execute permissions to Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
+
+      - name: Start db
+        run: docker compose -f db.yml up -d
+
+      - name: Build jar
+        run: ./gradlew build
+
+      - name: Start Docker Compose services
+        run: docker compose -f docker-compose.yml up -d

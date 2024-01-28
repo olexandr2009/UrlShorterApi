@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 9999:9999
+      - "9999:9999"
     environment:
       SPRING_PROFILES_ACTIVE: ${ACTIVE_PROFILE}
       SPRING_DATASOURCE_URL: ${DB_URL}
