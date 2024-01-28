@@ -7,6 +7,8 @@ on:
 
 env:
   SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/urlshorterdb
+  SPRING_DATASOURCE_USERNAME: test
+  SPRING_DATASOURCE_PASSWORD: test
 
 jobs:
   tests:
