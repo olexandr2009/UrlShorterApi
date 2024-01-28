@@ -5,6 +5,11 @@ on:
     branches:
       - master
 
+env:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/urlshorterdb
+  SPRING_DATASOURCE_USERNAME: test
+  SPRING_DATASOURCE_PASSWORD: test
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -24,7 +29,7 @@ jobs:
         uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
 
       - name: Start Docker Compose services
-        run: docker compose -f docker-compose.yml up -d
+        run: docker compose -f db.yml up -d
 
       - name: Run test
         run: ./gradlew test -i

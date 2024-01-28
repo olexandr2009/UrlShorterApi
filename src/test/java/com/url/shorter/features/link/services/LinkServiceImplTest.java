@@ -45,7 +45,7 @@ class LinkServiceImplTest {
     @Test
     void testCreateByLongLink() {
         when(linkRepository.saveAndFlush(any())).thenReturn(createTestLinkEntity());
-        when(shortLinkGenerator.generate(any())).thenReturn("http://example.com");
+        when(shortLinkGenerator.generate()).thenReturn("http://example.com");
         when(userRepository.findById(any())).thenReturn(Optional.of(new UserEntity()));
 
         LinkDto testLinkDto = createTestLinkDto();
@@ -128,7 +128,7 @@ class LinkServiceImplTest {
         Optional<LinkEntity> optionalLinkEntity = Optional.of(linkEntity);
 
         // when
-        when(linkRepository.findByShortLink(shortLink)).thenReturn(optionalLinkEntity);
+        when(linkRepository.findByShortLink(any())).thenReturn(optionalLinkEntity);
         Optional<LinkDto> result = linkService.findByShortLink(shortLink);
 
         // then
