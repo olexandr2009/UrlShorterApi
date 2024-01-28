@@ -30,12 +30,5 @@ jobs:
 
       - name: Start db
         run: docker compose -f db.yml up -d
-
-      - name: Build jar
-        run: ./gradlew build
-
-      - name: Start Docker Compose services
-        run: docker compose -f docker-compose.yml up -d
-
       - name: Run test
         run: ./gradlew test -i
