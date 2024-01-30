@@ -1,7 +1,6 @@
 package com.url.shorter.features.link.services;
 
 import com.url.shorter.features.link.dto.LinkDto;
-import com.url.shorter.features.user.dtos.UserDto;
 
 import java.util.List;
 import java.util.Optional;
