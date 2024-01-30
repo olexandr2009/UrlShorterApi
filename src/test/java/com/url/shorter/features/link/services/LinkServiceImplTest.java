@@ -55,7 +55,7 @@ class LinkServiceImplTest {
 
     @Test
     void testFindAll() {
-        when(linkRepository.findAll()).thenReturn(Arrays.asList(createTestLinkEntity()));
+        when(linkRepository.findAll()).thenReturn(Collections.singletonList(createTestLinkEntity()));
 
         List<LinkDto> allLinks = linkService.findAll();
 

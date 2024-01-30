@@ -16,18 +16,9 @@ public class ShortLinkGeneratorTest {
 
     @Test
     public void testGenerate() {
-        String longLink = "https://www.example.com";
         String shortLink = linkGenerator.generate();
 
         //Checking that the link has the correct protocol and resource
         assertTrue(shortLink.startsWith("http"));
-    }
-
-
-    //Test for an exception when an invalid long link is entered
-    @Test
-    public void testInvalidLongLink() {
-        String longLink = "invalid_link";
-        linkGenerator.generate();
     }
 }
