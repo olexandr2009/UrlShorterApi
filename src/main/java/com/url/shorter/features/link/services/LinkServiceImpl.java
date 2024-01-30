@@ -1,8 +1,10 @@
 package com.url.shorter.features.link.services;
 
+import com.url.shorter.config.Prefs;
 import com.url.shorter.features.link.dto.LinkDto;
 import com.url.shorter.features.link.entities.LinkEntity;
 import com.url.shorter.features.link.repositories.LinkRepository;
+import com.url.shorter.features.user.entities.UserEntity;
 import com.url.shorter.features.user.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class LinkServiceImpl implements LinkService {
     private ShortLinkGenerator shortLinkGenerator;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private Prefs prefs;
 
     @Transactional
     @Override
@@ -58,16 +62,18 @@ public class LinkServiceImpl implements LinkService {
 
         String shortLink = shortLinkGenerator.generate();
 
+        LocalDateTime expirationDate = linkDto.getExpirationDate() == null
+                ? LocalDateTime.now().plusDays(7) : linkDto.getExpirationDate();
+
         LinkEntity entity = LinkEntity.builder()
                 .longLink(linkDto.getLongLink())
-                .shortLink(linkDto.getShortLink())
+                .shortLink(shortLink)
                 .creationDate(linkDto.getCreationDate())
+                .expirationDate(expirationDate)
                 .clicks(linkDto.getOpenCount())
-                .user(userRepository.findByUsername(linkDto.getUsername()).orElseThrow())
+                .owner(userRepository.findByUsername(linkDto.getOwnerName()).orElseThrow())
                 .build();
 
-        entity.setShortLink(shortLink);
-        entity.setUser(userRepository.findByUsername(linkDto.getUsername()).orElseThrow());
         entity = linkRepository.saveAndFlush(entity);
 
         return LinkDto.fromEntity(entity);
@@ -130,8 +136,12 @@ public class LinkServiceImpl implements LinkService {
 
     @Cacheable(key = "#shortLink")
     public Optional<LinkDto> findByShortLink(String shortLink) {
-        return linkRepository.findByShortLink(shortLink)
-                .map(LinkDto::fromEntity);
+        try {
+            return linkRepository.findByShortLinkEndsWith(shortLink)
+                    .map(LinkDto::fromEntity);
+        } catch (Exception e){
+            return Optional.empty();
+        }
     }
 
     @Transactional
@@ -139,7 +149,7 @@ public class LinkServiceImpl implements LinkService {
     @CacheEvict(key = "#shortLink")
     public void deleteByShortLink(String shortLink) {
         // Get link entity from DB. Throw exception if entity is missing
-        LinkEntity linkEntity = linkRepository.findByShortLink(shortLink)
+        LinkEntity linkEntity = linkRepository.findByShortLinkEndsWith(shortLink)
                 .orElseThrow(() -> new IllegalArgumentException("Link with the provided short link does not exist."));
         // Delete Entity from DB
         linkRepository.delete(linkEntity);
@@ -147,8 +157,8 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     public List<LinkDto> findAllLinks(String username) {
-        List<LinkEntity> linkEntities = linkRepository.findByUserUsername(username);
-        return linkEntities.stream()
+        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow();
+        return userEntity.getLinks().stream()
                 .map(LinkDto::fromEntity)
                 .collect(Collectors.toList());
     }

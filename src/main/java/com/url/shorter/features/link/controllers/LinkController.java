@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,24 +23,30 @@ import java.util.Optional;
 @Tag(name = "Links", description = "Links api")
 @RequestMapping("/V1/links")
 public class LinkController {
-
-    private final LinkService linkService;
-
-    public LinkController(LinkService linkService) {
-        this.linkService = linkService;
-    }
+    @Autowired
+    private LinkService linkService;
 
     @Operation(
-            summary = "Find by short link",
+            summary = "Find by long link",
             tags = {"Links"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "200", content = @Content(
+                    schema = @Schema(
+                            implementation = LinkDto.class
+                    )
+                )
+            ),
+            @ApiResponse(responseCode = "400", description = "Link not found"),
             @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
     })
-    @GetMapping("/{shortLink}")
-    public ResponseEntity<Optional<LinkDto>> findLinkByShortLink(@PathVariable String shortLink) {
-        return ResponseEntity.ok(linkService.findByShortLink(shortLink));
+    @GetMapping("/find")
+    public ResponseEntity<?> findLinkByLongLink(@RequestParam String longLink) {
+            Optional<LinkDto> optionalLink = linkService.findByLongLink(longLink);
+            if (optionalLink.isPresent()){
+                return ResponseEntity.ok(optionalLink);
+            }
+            return ResponseEntity.badRequest().body("Link not found");
     }
 
     @Operation(
@@ -63,13 +70,12 @@ public class LinkController {
             tags = {"Links"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201"),
-            @ApiResponse(responseCode = "400", description = "Long link isn't valid"),
-            @ApiResponse(responseCode = "500"),
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", description = "Long link isn't valid or it already exists"),
             @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
     })
     @PostMapping("/save")
-    public ResponseEntity<LinkDto> saveLongLink(
+    public ResponseEntity<?> saveLongLink(
             @RequestParam String longLink,
             @RequestParam(required = false) LocalDateTime dateExp,
             Principal principal
@@ -77,20 +83,17 @@ public class LinkController {
         try {
             LinkDto linkDto = LinkDto.builder()
                     .longLink(longLink)
-                    .shortLink(null)
                     .creationDate(LocalDateTime.now())
                     .expirationDate(dateExp)
                     .openCount(0)
-                    .username(principal.getName())
+                    .ownerName(principal.getName())
                     .build();
 
             LinkDto savedLink = linkService.createByLongLink(linkDto);
 
-            return new ResponseEntity<>(savedLink, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok().body(savedLink);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

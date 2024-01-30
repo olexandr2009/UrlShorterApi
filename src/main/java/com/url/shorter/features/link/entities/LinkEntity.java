@@ -39,5 +39,5 @@ public class LinkEntity {
 
         @ManyToOne
         @JoinColumn(name = "owner_name", referencedColumnName = "username")
-        private UserEntity user;
+        private UserEntity owner;
 }

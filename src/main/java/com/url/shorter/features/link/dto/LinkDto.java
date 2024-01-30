@@ -21,7 +21,7 @@ public class LinkDto {
     LocalDateTime creationDate;
     LocalDateTime expirationDate;
     int openCount;
-    String username;
+    String ownerName;
 
     public static LinkDto fromEntity(LinkEntity linkEntity) {
         return LinkDto.builder()
@@ -30,7 +30,7 @@ public class LinkDto {
                 .creationDate(linkEntity.getCreationDate())
                 .openCount(linkEntity.getClicks())
                 .expirationDate(linkEntity.getExpirationDate())
-                .username(linkEntity.getUser() != null ? linkEntity.getUser().getUsername() : null)
+                .ownerName(linkEntity.getOwner() != null ? linkEntity.getOwner().getUsername() : null)
                 .build();
     }
 }
