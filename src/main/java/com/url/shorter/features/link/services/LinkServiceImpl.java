@@ -65,6 +65,9 @@ public class LinkServiceImpl implements LinkService {
         LocalDateTime expirationDate = linkDto.getExpirationDate() == null
                 ? LocalDateTime.now().plusDays(7) : linkDto.getExpirationDate();
 
+        if (LocalDateTime.now().isAfter(expirationDate)) {
+            throw new RuntimeException("Expiration date must be in the future");
+        }
         LinkEntity entity = LinkEntity.builder()
                 .longLink(linkDto.getLongLink())
                 .shortLink(shortLink)
