@@ -1,12 +1,10 @@
 package com.url.shorter.features.link.dto;
 
 import com.url.shorter.features.link.entities.LinkEntity;
-import com.url.shorter.features.user.entities.UserEntity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Link DTO (data transfer object)
@@ -18,38 +16,21 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LinkDto {
 
-    UUID id;
-    String shortUrl;
-    String originUrl;
+    String shortLink;
+    String longLink;
     LocalDateTime creationDate;
     LocalDateTime expirationDate;
     int openCount;
-    UUID userId;
-
-    public LinkEntity toEntity() {
-        return LinkEntity.builder()
-                .id(id)
-                .shortLink(shortUrl)
-                .longLink(originUrl)
-                .creationDate(creationDate)
-                .expirationDate(expirationDate)
-                .clicks(openCount)
-                .user(UserEntity.builder().id(userId).build())
-                .build();
-    }
+    String ownerName;
 
     public static LinkDto fromEntity(LinkEntity linkEntity) {
         return LinkDto.builder()
-                .id(linkEntity.getId())
-                .shortUrl(linkEntity.getShortLink())
-                .originUrl(linkEntity.getLongLink())
+                .shortLink(linkEntity.getShortLink())
+                .longLink(linkEntity.getLongLink())
                 .creationDate(linkEntity.getCreationDate())
                 .openCount(linkEntity.getClicks())
                 .expirationDate(linkEntity.getExpirationDate())
-                .userId(linkEntity.getUser() != null ? linkEntity.getUser().getId() : null)
+                .ownerName(linkEntity.getOwner() != null ? linkEntity.getOwner().getUsername() : null)
                 .build();
-    }
-    public String getLongLink() {
-        return originUrl;
     }
 }

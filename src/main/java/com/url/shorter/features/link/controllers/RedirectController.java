@@ -8,21 +8,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-@RestController
+@Controller
 @Tag(name = "Redirect", description = "Redirector to long Url")
-
 public class RedirectController {
-    private final LinkService linkService;
+    @Autowired
+    private LinkService linkService;
 
-    public RedirectController(LinkService linkService) {
-        this.linkService = linkService;
-    }
     @Operation(
             summary = "Redirect",
             description = "redirect all users by url",
@@ -30,7 +28,7 @@ public class RedirectController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "302"),
-            @ApiResponse(responseCode = "404", description = "Short link not found")
+            @ApiResponse(responseCode = "204", description = "Short link not found")
     })
     @GetMapping("/{shortLink}")
     public void redirectToLongLink(
@@ -38,10 +36,10 @@ public class RedirectController {
             @PathVariable String shortLink, HttpServletResponse response) throws IOException {
         try {
             LinkDto linkDto = linkService.findByShortLink(shortLink).orElseThrow();
-            linkService.incrementUseCount(linkDto);
-            response.sendRedirect(linkDto.getOriginUrl());
+            linkService.incrementUseCount(linkDto.getShortLink());
+            response.sendRedirect(linkDto.getLongLink());
         } catch (Exception e){
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.sendError(HttpServletResponse.SC_NO_CONTENT);
         }
     }
 }

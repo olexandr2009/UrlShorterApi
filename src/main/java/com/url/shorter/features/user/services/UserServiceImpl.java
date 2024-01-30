@@ -87,12 +87,4 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         user.setRoles(roleEntities);
         return userMapper.toUserDto(userRepository.save(user));
     }
-
-    @Override
-    public UserDto findByUsername(String username) {
-        return userMapper.toUserDto(
-                userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username)));
-    }
-
 }

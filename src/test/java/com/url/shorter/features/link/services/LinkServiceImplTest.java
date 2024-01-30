@@ -17,10 +17,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,19 +43,19 @@ class LinkServiceImplTest {
     void testCreateByLongLink() {
         when(linkRepository.saveAndFlush(any())).thenReturn(createTestLinkEntity());
         when(shortLinkGenerator.generate()).thenReturn("http://example.com");
-        when(userRepository.findById(any())).thenReturn(Optional.of(new UserEntity()));
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(new UserEntity()));
 
         LinkDto testLinkDto = createTestLinkDto();
 
         LinkDto savedLinkDto = linkService.createByLongLink(testLinkDto);
 
-        assertEquals(testLinkDto.getOriginUrl(), savedLinkDto.getOriginUrl());
-        assertEquals(testLinkDto.getShortUrl(), savedLinkDto.getShortUrl());
+        assertEquals(testLinkDto.getLongLink(), savedLinkDto.getLongLink());
+        assertEquals(testLinkDto.getShortLink(), savedLinkDto.getShortLink());
     }
 
     @Test
     void testFindAll() {
-        when(linkRepository.findAll()).thenReturn(Arrays.asList(createTestLinkEntity()));
+        when(linkRepository.findAll()).thenReturn(Collections.singletonList(createTestLinkEntity()));
 
         List<LinkDto> allLinks = linkService.findAll();
 
@@ -99,21 +96,19 @@ class LinkServiceImplTest {
 
     @Test
     void testFindUsersActiveLinks() {
+        UserEntity userEntity = new UserEntity();
+        Set<LinkEntity> linkEntities = Set.of(
+                new LinkEntity(UUID.randomUUID(), "long1", "short1", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, userEntity),
+                new LinkEntity(UUID.randomUUID(), "long2", "short2", LocalDateTime.now(), LocalDateTime.now().minusDays(7), 0, userEntity));
+        userEntity.setLinks(linkEntities);
 
-        // given
-        UUID userId = UUID.randomUUID();
-        UserDto userDto = new UserDto(userId);
-
-        List<LinkEntity> linkEntities = Arrays.asList(new LinkEntity(UUID.randomUUID(), "long1", "short1", LocalDateTime.now(), LocalDateTime.now().plusDays(7), 0, new UserEntity(userId)), new LinkEntity(UUID.randomUUID(), "long2", "short2", LocalDateTime.now(), LocalDateTime.now().minusDays(7), 0, new UserEntity(userId)));
-
-
-        // when
-        when(linkRepository.findByUserId(userId)).thenReturn(linkEntities);
-        List<LinkDto> result = linkService.findActiveLinks(userDto);
+        String any = any();
+        when(userRepository.findByUsername(any)).thenReturn(Optional.of(userEntity));
+        List<LinkDto> result = linkService.findActiveLinks(any);
 
         // then
         assertEquals(1, result.size());
-        verify(linkRepository, times(1)).findByUserId(userId);
+        verify(userRepository, times(1)).findByUsername(any);
     }
 
     @Test
@@ -128,13 +123,13 @@ class LinkServiceImplTest {
         Optional<LinkEntity> optionalLinkEntity = Optional.of(linkEntity);
 
         // when
-        when(linkRepository.findByShortLink(any())).thenReturn(optionalLinkEntity);
+        when(linkRepository.findByShortLinkEndsWith(any())).thenReturn(optionalLinkEntity);
         Optional<LinkDto> result = linkService.findByShortLink(shortLink);
 
         // then
         assertTrue(result.isPresent());
-        assertEquals(linkEntity.getShortLink(), result.get().getShortUrl());
-        verify(linkRepository, times(1)).findByShortLink(shortLink);
+        assertEquals(linkEntity.getShortLink(), result.get().getShortLink());
+        verify(linkRepository, times(1)).findByShortLinkEndsWith(shortLink);
     }
 
     @Test
@@ -149,7 +144,7 @@ class LinkServiceImplTest {
         Optional<LinkEntity> optionalLinkEntity = Optional.of(linkEntity);
 
         // when
-        when(linkRepository.findByShortLink(shortLink)).thenReturn(optionalLinkEntity);
+        when(linkRepository.findByShortLinkEndsWith(shortLink)).thenReturn(optionalLinkEntity);
         linkService.deleteByShortLink(shortLink);
 
         // then
@@ -172,12 +167,12 @@ class LinkServiceImplTest {
 
     private LinkDto createTestLinkDto() {
         return LinkDto.builder()
-                .originUrl("http://example.com")
-                .shortUrl("abc123")
+                .longLink("http://example.com")
+                .shortLink("abc123")
                 .creationDate(LocalDateTime.now())
                 .expirationDate(LocalDateTime.now().plusDays(7))
                 .openCount(0)
-                .userId(UUID.randomUUID())
+                .ownerName("testUsername")
                 .build();
     }
 }

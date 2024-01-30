@@ -1,5 +1,6 @@
 package com.url.shorter.features.user.entities;
 
+import com.url.shorter.features.link.entities.LinkEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -39,6 +40,10 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @Builder.Default
     private Set<RoleEntity> roles = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    @Builder.Default
+    private Set<LinkEntity> links = new HashSet<>();
 
     public UserEntity(String username, String password) {
         this.username = username;

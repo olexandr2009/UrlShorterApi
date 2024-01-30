@@ -20,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
@@ -92,24 +95,5 @@ public class UserController {
         }catch (UserNotFoundException e){
             return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
         }
-    }
-    @Operation(
-            summary = "Get user id",
-            description = "get user id for api usage",
-            tags = {"Users"}
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    description = "User id",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE
-                    )
-            ),
-            @ApiResponse(responseCode = "403", description = "Unauthorized authorize in Authentication login")
-    })
-    @GetMapping("/id")
-    public ResponseEntity<String> getId(Principal principal){
-        UserDto user = userService.findByUsername(principal.getName());
-        return ResponseEntity.ok(user.getId().toString());
     }
 }

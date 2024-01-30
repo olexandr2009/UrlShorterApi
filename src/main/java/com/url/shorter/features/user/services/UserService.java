@@ -23,5 +23,4 @@ public interface UserService {
     UserDto updateUserRoles(String username, Collection<RoleEntity.UserRole> roles)
             throws UserNotFoundException;
 
-    UserDto findByUsername(String username);
 }

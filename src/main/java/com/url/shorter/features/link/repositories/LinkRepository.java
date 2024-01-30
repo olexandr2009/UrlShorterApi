@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,12 +17,11 @@ import java.util.UUID;
 @Repository
 public interface LinkRepository extends JpaRepository<LinkEntity, UUID> {
     Optional<LinkEntity> findByLongLink(String longLink);
-    Optional<LinkEntity> findByShortLink(String ShortLink);
+    Optional<LinkEntity> findByShortLinkEndsWith(String shortLink);
     void deleteByLongLink(String longLink);
-    List<LinkEntity> findByUserId(UUID userId);
     boolean existsByShortLink(String shortLink);
 
     @Modifying
-    @Query(value = "update LinkEntity le set le.clicks = le.clicks + 1 where le.id = :id")
-    void updateUsedCount(@Param(value = "id") UUID id);
+    @Query(value = "update LinkEntity le set le.clicks = le.clicks + 1 where le.shortLink = :shortLink")
+    void incrementOpenCount(@Param(value = "shortLink") String shortLink);
 }
